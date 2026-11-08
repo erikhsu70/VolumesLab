@@ -68,7 +68,7 @@ import {
 } from "@/data/site";
 import { LINKS, setBookingHome } from "@/lib/momence";
 
-const CMS_URL = "https://volumes-cms.vercel.app";
+import { CMS_URL } from "@/lib/cms-origin";
 const TIMEOUT_MS = 3_500;
 
 /* ────────────────────────── fetch one bundle ────────────────────────── */

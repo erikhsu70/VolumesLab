@@ -1,4 +1,4 @@
-// Connection to the Payload CMS (https://volumes-cms.vercel.app).
+// Connection to the Payload CMS configured by VITE_CMS_URL.
 //
 // Contract agreed with the client:
 //   · Edits in the CMS appear on the site in (near) real time — content is
@@ -10,7 +10,7 @@
 // Commercial values (price, duration, availability) never come from here.
 // Momence owns those; the CMS collections do not even have the fields.
 
-const CMS_URL = "https://volumes-cms.vercel.app";
+import { CMS_URL } from "@/lib/cms-origin";
 
 /** How long a fetched value is served before we re-ask the CMS. */
 const TTL_MS = 30_000;
