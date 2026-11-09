@@ -10,7 +10,8 @@ import { Link } from "@tanstack/react-router";
 import type { Product } from "@/data/catalog";
 import { getTests, productPath } from "@/data/catalog";
 import { bookingHref, bookingLabel, bookingOpensTab, bookServicesHref, trackBooking } from "@/lib/booking";
-import { productReachable } from "@/lib/sections";
+import { productReachable, productsInSection } from "@/lib/sections";
+import type { SectionKey } from "@/data/pages";
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
@@ -207,7 +208,10 @@ export function ProductCard({ p, sourcePage = "/" }: { p: Product; sourcePage?: 
   return (
     <article className="product-card flex h-full min-w-0 flex-col break-words border border-border bg-card p-6">
       <h3 className="font-display text-lg font-bold uppercase leading-tight">{p.name}</h3>
-      <p className="mt-3 flex-1 whitespace-pre-line text-sm leading-relaxed text-muted">{p.shortDescription ?? p.tagline}</p>
+      {p.shortDescription?.trim() && (
+        <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted">{p.shortDescription}</p>
+      )}
+      <div className="flex-1" aria-hidden />
       {p.badges && p.badges.length > 0 && (
         <div className="mt-4 flex flex-wrap gap-2">
           {p.badges.map((b) => (
@@ -228,7 +232,9 @@ export function AssessmentCard({ a, sourcePage = "/" }: { a: Product; sourcePage
   return (
     <article className="product-card flex h-full min-w-0 flex-col break-words border border-border bg-card p-6">
       <h3 className="font-display text-xl font-extrabold uppercase leading-tight">{a.name}</h3>
-      <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted">{a.shortDescription ?? a.tagline}</p>
+      {a.shortDescription?.trim() && (
+        <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted">{a.shortDescription}</p>
+      )}
 
       {/* The tests inside this assessment, as the architecture diagram shows.
           Tiles are a fixed height rather than stretching to fill the card:
@@ -279,7 +285,9 @@ export function MembershipCard({ m, sourcePage = "/" }: { m: Product; sourcePage
     <article className="product-card flex h-full min-w-0 flex-col break-words border border-border bg-card p-8">
       <p className="font-mono text-[10px] uppercase tracking-widest text-primary">{m.membership?.goal}</p>
       <h3 className="mt-4 font-display text-2xl font-extrabold uppercase tracking-tight">{m.name}</h3>
-      <p className="mt-3 whitespace-pre-line text-base leading-relaxed text-muted">{m.shortDescription ?? m.tagline}</p>
+      {m.shortDescription?.trim() && (
+        <p className="mt-3 whitespace-pre-line text-base leading-relaxed text-muted">{m.shortDescription}</p>
+      )}
       <ul className="mt-6 flex-1 space-y-2 text-sm text-foreground/85">
         {m.measures.slice(0, 6).map((item) => (
           <li key={item} className="flex gap-3">
@@ -327,5 +335,35 @@ export function ServiceChoiceCard({
         {ctaLabel} →
       </span>
     </Link>
+  );
+}
+
+/** One grid and selection rule for the homepage and related services. */
+export function SectionProductGrid({
+  section,
+  excludeSlug,
+  sourcePage = "/",
+}: {
+  section: SectionKey;
+  excludeSlug?: string;
+  sourcePage?: string;
+}) {
+  const items = productsInSection(section).filter(
+    (item) => item.status !== "hidden" && item.slug !== excludeSlug,
+  );
+  if (!items.length) return null;
+
+  return (
+    <div className={section === "memberships"
+      ? "grid gap-6 md:grid-cols-2"
+      : "grid gap-6 sm:grid-cols-2 lg:grid-cols-4"}>
+      {items.map((item) => section === "memberships" ? (
+        <MembershipCard key={item.slug} m={item} sourcePage={sourcePage} />
+      ) : section === "assessments" ? (
+        <AssessmentCard key={item.slug} a={item} sourcePage={sourcePage} />
+      ) : (
+        <ProductCard key={item.slug} p={item} sourcePage={sourcePage} />
+      ))}
+    </div>
   );
 }

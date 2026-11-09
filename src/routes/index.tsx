@@ -17,10 +17,10 @@
 
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteChrome } from "@/components/site/SiteChrome";
-import { AssessmentCard, MembershipCard, ProductCard } from "@/components/site/cards";
+import { SectionProductGrid } from "@/components/site/cards";
 import { ADDRESS, CONTACT, HOURS, MAP_EMBED, MAP_LINK } from "@/data/site";
-import { homePage, type HeadlineSize, type SectionKey } from "@/data/pages";
-import { productsInSection, visibleSections } from "@/lib/sections";
+import { homePage, type HeadlineSize } from "@/data/pages";
+import { visibleSections } from "@/lib/sections";
 import { canonical } from "@/lib/seo";
 import { metaTags } from "@/data/meta";
 
@@ -41,45 +41,13 @@ function Home() {
       {/* Order, names and on/off come from the CMS (Home page → Sections). */}
       {visibleSections().map((s) => (
         <Section key={s.key} id={s.key} title={s.title} description={s.description}>
-          <SectionGrid section={s.key} />
+          <SectionProductGrid section={s.key} />
         </Section>
       ))}
 
       <Location />
     </SiteChrome>
   );
-}
-
-/** The cards of one section: each section keeps the card type it always had. */
-function SectionGrid({ section }: { section: SectionKey }) {
-  const items = productsInSection(section);
-  switch (section) {
-    // Packs: four to a row on desktop (client, 23/09/2026).
-    case "assessments":
-      return (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {items.map((a) => (
-            <AssessmentCard key={a.slug} a={a} />
-          ))}
-        </div>
-      );
-    case "memberships":
-      return (
-        <div className="grid gap-6 md:grid-cols-2">
-          {items.map((m) => (
-            <MembershipCard key={m.slug} m={m} />
-          ))}
-        </div>
-      );
-    default:
-      return (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {items.map((p) => (
-            <ProductCard key={p.slug} p={p} />
-          ))}
-        </div>
-      );
-  }
 }
 
 /* ---------------- Contact block ---------------- */

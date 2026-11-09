@@ -1,13 +1,12 @@
 // Shared SKU layout approved for the live site: essentials, explanation,
 // preparation, three FAQs, location, then every other reachable service.
-import { useRef } from "react";
-import { allProducts, productPath, type Product } from "@/data/catalog";
+import { productPath, type Product } from "@/data/catalog";
 import { getProductContent } from "@/data/productContent";
 import { productLabels as L } from "@/data/pages";
 import { ADDRESS, MAP_EMBED, MAP_LINK } from "@/data/site";
 import { bookingHref, bookingLabel, trackBooking } from "@/lib/booking";
-import { productReachable } from "@/lib/sections";
-import { AssessmentCard, BookCta, IncludedBadge, MembershipCard, ProductCard } from "./cards";
+import { productsInSection, visibleSections } from "@/lib/sections";
+import { BookCta, IncludedBadge, SectionProductGrid } from "./cards";
 import { Eyebrow, FaqList, SectionTitle, StickyBookBar } from "./blocks";
 
 function priceLabel(product: Product) {
@@ -293,7 +292,7 @@ export function ProductDetail({ product }: { product: Product }) {
         </div>
       </section>
 
-      <OtherProductsCarousel product={product} />
+      <OtherProductsGrid product={product} />
 
       <StickyBookBar
         price={product.price === 0 && product.priceTbd ? undefined : product.price}
@@ -306,18 +305,13 @@ export function ProductDetail({ product }: { product: Product }) {
   );
 }
 
-function OtherProductsCarousel({ product }: { product: Product }) {
-  const listRef = useRef<HTMLUListElement>(null);
-  const others = allProducts.filter(
-    (item) => item.slug !== product.slug && item.status !== "hidden" && productReachable(item),
+function OtherProductsGrid({ product }: { product: Product }) {
+  const sections = visibleSections().filter((section) =>
+    productsInSection(section.key).some(
+      (item) => item.status !== "hidden" && item.slug !== product.slug,
+    ),
   );
-
-  const showNext = () => {
-    const list = listRef.current;
-    if (list) list.scrollBy({ left: Math.max(list.clientWidth * 0.8, 280), behavior: "smooth" });
-  };
-
-  if (!others.length) return null;
+  if (!sections.length) return null;
 
   return (
     <section className="px-page py-14 md:py-20" aria-labelledby="other-products-title">
@@ -328,32 +322,15 @@ function OtherProductsCarousel({ product }: { product: Product }) {
         >
           Other products
         </h2>
-        <div className="relative mt-8">
-          <ul
-            ref={listRef}
-            className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-4 pr-16"
-            aria-label="Other Volumes Lab products"
-          >
-            {others.map((item) => (
-              <li key={item.slug} className="w-[min(100%,300px)] shrink-0 snap-start">
-                {item.category === "membership" ? (
-                  <MembershipCard m={item} sourcePage={productPath(product)} />
-                ) : item.category === "assessment" ? (
-                  <AssessmentCard a={item} sourcePage={productPath(product)} />
-                ) : (
-                  <ProductCard p={item} sourcePage={productPath(product)} />
-                )
-              </li>
-            ))}
-          </ul>
-          <button
-            type="button"
-            onClick={showNext}
-            aria-label="Show next products"
-            className="absolute right-0 top-1/2 flex size-12 -translate-y-1/2 items-center justify-center border border-foreground bg-background text-2xl transition-colors hover:bg-card focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-          >
-            <span aria-hidden>→</span>
-          </button>
+        <div className="mt-8 space-y-6">
+          {sections.map((section) => (
+            <SectionProductGrid
+              key={section.key}
+              section={section.key}
+              excludeSlug={product.slug}
+              sourcePage={productPath(product)}
+            />
+          ))}
         </div>
       </div>
     </section>
