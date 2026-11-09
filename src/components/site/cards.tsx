@@ -205,7 +205,7 @@ function CtaRow({ p, sourcePage }: { p: Product; sourcePage: string }) {
 
 export function ProductCard({ p, sourcePage = "/" }: { p: Product; sourcePage?: string }) {
   return (
-    <article className="flex flex-col border border-border bg-card p-6">
+    <article className="flex flex-col border border-border bg-card p-6 transition-colors hover:border-foreground">
       <h3 className="font-display text-lg font-bold uppercase leading-tight">{p.name}</h3>
       <p className="mt-3 flex-1 whitespace-pre-line text-sm leading-relaxed text-muted">{p.shortDescription ?? p.tagline}</p>
       {p.badges && p.badges.length > 0 && (
@@ -226,7 +226,7 @@ export function ProductCard({ p, sourcePage = "/" }: { p: Product; sourcePage?: 
 export function AssessmentCard({ a, sourcePage = "/" }: { a: Product; sourcePage?: string }) {
   const included = getTests(a.includedTests ?? []);
   return (
-    <article className="flex flex-col border border-border bg-card p-6">
+    <article className="flex flex-col border border-border bg-card p-6 transition-colors hover:border-foreground">
       <h3 className="font-display text-xl font-extrabold uppercase leading-tight">{a.name}</h3>
       <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted">{a.shortDescription ?? a.tagline}</p>
 
@@ -276,7 +276,7 @@ export function AssessmentCard({ a, sourcePage = "/" }: { a: Product; sourcePage
 
 export function MembershipCard({ m, sourcePage = "/" }: { m: Product; sourcePage?: string }) {
   return (
-    <article className="flex flex-col border border-border bg-card p-8">
+    <article className="flex flex-col border border-border bg-card p-8 transition-colors hover:border-foreground">
       <p className="font-mono text-[10px] uppercase tracking-widest text-primary">{m.membership?.goal}</p>
       <h3 className="mt-4 font-display text-2xl font-extrabold uppercase tracking-tight">{m.name}</h3>
       <p className="mt-3 whitespace-pre-line text-base leading-relaxed text-muted">{m.shortDescription ?? m.tagline}</p>
