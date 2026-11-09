@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { mkdir, writeFile, appendFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 
-export const CMS = 'https://volumes-cms.vercel.app';
+export const CMS = 'https://cms.volumeslab.com';
 export const snapshotFile = '.static-build/cms.json';
 const collections = ['tests', 'assessments', 'medical', 'training', 'memberships'];
 const globals = ['site-settings', 'home-page', 'product-labels', 'about-page',

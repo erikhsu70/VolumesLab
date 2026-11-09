@@ -297,7 +297,7 @@ test('text size and logos (17/09): from the CMS, defaults when cleared or unknow
     },
   }));
   assert.equal(TEXT.size, 'large');
-  assert.equal(BRANDING.logo, 'https://volumes-cms.vercel.app/api/media/file/icon.png', 'a CMS-served file gets the CMS origin');
+  assert.equal(BRANDING.logo, 'https://cms.volumeslab.com/api/media/file/icon.png', 'a CMS-served file gets the stable CMS origin');
   assert.equal(BRANDING.mark, 'https://blob.vercel-storage.com/mark.png', 'a Blob file is used as is');
   applyCmsContent(bundle([], [], { site: { textSize: 'huge', branding: { logo: null, mark: 3 } } }));
   assert.equal(TEXT.size, 'medium', 'an unknown size is medium');
