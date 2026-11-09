@@ -3,7 +3,7 @@
 import { productPath, type Product } from "@/data/catalog";
 import { getProductContent } from "@/data/productContent";
 import { productLabels as L } from "@/data/pages";
-import { ADDRESS, MAP_EMBED, MAP_LINK } from "@/data/site";
+import { Location } from "./Location";
 import { bookingHref, bookingLabel, trackBooking } from "@/lib/booking";
 import { productsInSection, visibleSections } from "@/lib/sections";
 import { BookCta, IncludedBadge, SectionProductGrid } from "./cards";
@@ -264,33 +264,7 @@ export function ProductDetail({ product }: { product: Product }) {
         </div>
       </section>
 
-      <section className="border-b border-border px-page py-14 md:py-20">
-        <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-[minmax(220px,1fr)_minmax(0,1.5fr)] md:gap-12">
-          <div>
-            <SectionTitle>Where we are</SectionTitle>
-            <address className="mt-8 not-italic leading-relaxed">{ADDRESS.full}</address>
-            <a
-              href={MAP_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-block font-mono text-[11px] font-bold uppercase tracking-widest underline underline-offset-4"
-            >
-              Get directions ↗
-            </a>
-            <p className="mt-5 max-w-sm text-xs leading-relaxed text-muted">
-              The map shows Volumes Lab. Confirm service availability and your appointment location
-              when booking.
-            </p>
-          </div>
-          <iframe
-            title={`Map showing ${ADDRESS.name}, ${ADDRESS.full}`}
-            src={MAP_EMBED}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            className="h-[300px] w-full border border-border grayscale md:h-[370px]"
-          />
-        </div>
-      </section>
+      <Location />
 
       <OtherProductsGrid product={product} />
 
