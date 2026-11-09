@@ -1,14 +1,13 @@
 // Shared SKU layout approved for the live site: essentials, explanation,
 // preparation, three FAQs, location, then every other reachable service.
 import { useRef } from "react";
-import { Link } from "@tanstack/react-router";
 import { allProducts, productPath, type Product } from "@/data/catalog";
 import { getProductContent } from "@/data/productContent";
 import { productLabels as L } from "@/data/pages";
 import { ADDRESS, MAP_EMBED, MAP_LINK } from "@/data/site";
 import { bookingHref, bookingLabel, trackBooking } from "@/lib/booking";
 import { productReachable } from "@/lib/sections";
-import { BookCta, IncludedBadge } from "./cards";
+import { AssessmentCard, BookCta, IncludedBadge, MembershipCard, ProductCard } from "./cards";
 import { Eyebrow, FaqList, SectionTitle, StickyBookBar } from "./blocks";
 
 function priceLabel(product: Product) {
@@ -336,31 +335,14 @@ function OtherProductsCarousel({ product }: { product: Product }) {
             aria-label="Other Volumes Lab products"
           >
             {others.map((item) => (
-              <li key={item.slug} className="w-[min(78vw,300px)] shrink-0 snap-start md:w-[300px]">
-                <Link
-                  to="/$slug"
-                  params={{ slug: item.slug }}
-                  className="flex h-full min-h-64 flex-col border border-border bg-card p-6 transition-colors hover:border-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-                >
-                  <span className="font-mono text-[10px] uppercase tracking-widest text-muted">
-                    {categoryLabel(item)}
-                  </span>
-                  <h3 className="mt-5 font-display text-xl font-extrabold uppercase leading-tight">
-                    {item.name}
-                  </h3>
-                  <p className="mt-3 flex-1 whitespace-pre-line text-sm leading-relaxed text-muted">
-                    {description(item)}
-                  </p>
-                  <span className="mt-6 flex items-baseline justify-between gap-3 border-t border-border pt-4">
-                    <span className="font-display text-lg font-bold">{priceLabel(item)}</span>
-                    <span className="font-mono text-[9px] uppercase text-muted">
-                      {item.duration || "Duration on booking"}
-                    </span>
-                  </span>
-                  <span className="mt-5 font-mono text-[10px] font-bold uppercase tracking-widest">
-                    View product →
-                  </span>
-                </Link>
+              <li key={item.slug} className="w-[min(100%,300px)] shrink-0 snap-start">
+                {item.category === "membership" ? (
+                  <MembershipCard m={item} sourcePage={productPath(product)} />
+                ) : item.category === "assessment" ? (
+                  <AssessmentCard a={item} sourcePage={productPath(product)} />
+                ) : (
+                  <ProductCard p={item} sourcePage={productPath(product)} />
+                )
               </li>
             ))}
           </ul>

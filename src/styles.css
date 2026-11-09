@@ -188,3 +188,21 @@ html {
   stroke-dashoffset: 1;
   animation: vl-draw 0.9s cubic-bezier(0.65, 0, 0.35, 1) 0.45s both;
 }
+
+/* Shared full-card feedback on the homepage and in product carousels. */
+.product-card {
+  transition: border-color 0.15s ease;
+}
+@media (hover: hover) {
+  .product-card:hover {
+    border-color: var(--foreground);
+  }
+}
+.product-card:focus-within {
+  border-color: var(--foreground);
+}
+@media (prefers-reduced-motion: reduce) {
+  .product-card {
+    transition: none;
+  }
+}
