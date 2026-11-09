@@ -258,9 +258,9 @@ export function ProductDetail({ product }: { product: Product }) {
       </section>
 
       <section className="border-b border-border px-page py-14 md:py-20">
-        <div className="mx-auto max-w-4xl">
+        <div className="mx-auto max-w-7xl">
           <SectionTitle>FAQs</SectionTitle>
-          <div className="mt-8">
+          <div className="mt-8 max-w-4xl">
             <FaqList items={faqs(product, preparation)} />
           </div>
         </div>
