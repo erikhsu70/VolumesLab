@@ -110,6 +110,27 @@ export type CmsBundle = {
   contact?: CmsDoc | null;
 };
 
+/** Failed reads never replace a rendered section; a successful empty list does. */
+export function mergeCmsContent(previous: CmsBundle | null, fresh: CmsBundle): CmsBundle {
+  if (!previous) return fresh;
+  const categories = new Set(fresh.categories ?? fresh.products.map((doc) => String(doc.category)));
+  const previousCategories = previous.categories ?? previous.products.map((doc) => String(doc.category));
+  return {
+    products: [...fresh.products, ...previous.products.filter((doc) => !categories.has(String(doc.category)))],
+    categories: [...new Set([...categories, ...previousCategories])],
+    site: fresh.site ?? previous.site,
+    home: fresh.home ?? previous.home,
+    labels: fresh.labels ?? previous.labels,
+    about: fresh.about ?? previous.about,
+    legal: fresh.legal ?? previous.legal,
+    meta: fresh.meta ?? previous.meta,
+    pages: fresh.pages ?? previous.pages,
+    faq: fresh.faq ?? previous.faq,
+    blog: fresh.blog ?? previous.blog,
+    contact: fresh.contact ?? previous.contact,
+  };
+}
+
 // Last successful read of each collection, per instance, so a blip after the
 // first request serves the previous list instead of nothing.
 const collectionCache = new Map<string, CmsDoc[]>();

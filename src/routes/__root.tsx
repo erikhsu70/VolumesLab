@@ -14,7 +14,8 @@ import appCss from "../styles.css?url";
 import { COMING_SOON } from "@/data/site";
 import { ComingSoon } from "@/components/site/ComingSoon";
 import { Analytics } from "@/components/site/Analytics";
-import { cmsSiteContent, applyCmsContent, cmsLookCss } from "@/lib/cms-content";
+import { cmsSiteContent, applyCmsContent, cmsLookCss, type CmsBundle } from "@/lib/cms-content";
+import type { createCmsNavigation } from "@/lib/cms-navigation";
 import { startCmsRefresh } from "@/lib/cms-refresh";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
@@ -76,15 +77,26 @@ function ErrorComponent({ error, reset }: { error: unknown; reset: () => void })
   );
 }
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  // One CMS fetch per route load. The bundle is serialized to the client, and
-  // applyCmsContent pours it over the data modules on both sides before
-  // anything renders, so every page shows what the panel says. Null (CMS
-  // down) preserves page copy; service visibility comes from the CMS bundle.
-  beforeLoad: async () => {
-    const cms = await cmsSiteContent();
-    applyCmsContent(cms);
-    return { cmsJson: JSON.stringify(cms) };
+export const Route = createRootRouteWithContext<{
+  queryClient: QueryClient;
+  cmsNavigation: ReturnType<typeof createCmsNavigation<CmsBundle>>;
+}>()({
+  beforeLoad: ({ context }) => {
+    const useSnapshot = (cmsJson: string) => {
+      applyCmsContent(JSON.parse(cmsJson) as CmsBundle | null);
+      return { cmsJson };
+    };
+    // Static generation still waits for a validated snapshot. After hydration
+    // client navigation uses that snapshot immediately, with no CMS wait.
+    if (typeof document !== "undefined") {
+      const snapshot = context.cmsNavigation.read();
+      if (snapshot !== undefined) return useSnapshot(snapshot);
+    }
+    return cmsSiteContent().then((cms) => {
+      const snapshot = JSON.stringify(cms);
+      if (typeof document !== "undefined") context.cmsNavigation.seed(snapshot);
+      return useSnapshot(snapshot);
+    });
   },
   head: ({ match }) => ({
     // Size of everything (client, 17/09/2026), letter case and background
@@ -173,17 +185,19 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const router = useRouter();
-  const { queryClient, cmsJson } = Route.useRouteContext();
+  const { queryClient, cmsJson, cmsNavigation } = Route.useRouteContext();
   const cms = JSON.parse(cmsJson) as Awaited<ReturnType<typeof cmsSiteContent>>;
   applyCmsContent(cms);
 
-  // Static HTML hydrates a build-time snapshot without running beforeLoad.
-  // Re-run the root AND child loaders so a direct product URL gets the same
-  // current CMS data (including loader product objects) as in-app navigation.
-  useEffect(
-    () => startCmsRefresh(() => router.invalidate({ sync: true }), document, window),
-    [router],
-  );
+  useEffect(() => cmsNavigation.seed(cmsJson), [cmsNavigation, cmsJson]);
+  useEffect(() => {
+    const refresh = () => cmsNavigation.refresh(() => router.invalidate({ sync: true }));
+    const stop = startCmsRefresh(refresh, document, window);
+    const unsubscribe = router.subscribe("onResolved", ({ pathChanged }) => {
+      if (pathChanged && document.visibilityState === "visible") void refresh().catch(() => {});
+    });
+    return () => { stop(); unsubscribe(); };
+  }, [router, cmsNavigation]);
 
   // Pre-launch gate: while COMING_SOON is on, every route (including deep
   // links people may have saved) shows the placeholder instead of the site.
