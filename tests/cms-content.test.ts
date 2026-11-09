@@ -64,7 +64,8 @@ test('fetch paginates, treats a loaded empty collection as authoritative, and ke
   const originalFetch = globalThis.fetch;
   let offline = false;
   const pages: number[] = [];
-  globalThis.fetch = async (input) => {
+  globalThis.fetch = async (input, init) => {
+    assert.equal(init?.cache, 'no-store', 'CMS refreshes must bypass browser cached responses');
     const url = new URL(String(input));
     if (url.pathname === '/api/tests') {
       if (offline) throw new Error('offline');

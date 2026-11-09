@@ -78,6 +78,7 @@ type CmsDoc = Record<string, unknown>;
 async function get(path: string): Promise<CmsDoc | null> {
   try {
     const res = await fetch(`${CMS_URL}${path}`, {
+      cache: "no-store",
       signal: AbortSignal.timeout(TIMEOUT_MS),
       headers: { Accept: "application/json" },
     });

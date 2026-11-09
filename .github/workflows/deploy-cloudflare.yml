@@ -37,7 +37,7 @@ jobs:
         run: node scripts/cms-snapshot.mjs --check
       - name: Test CMS synchronization safeguards
         if: steps.cms.outputs.changed == 'true'
-        run: node --test tests/cms-snapshot.test.mjs
+        run: node --experimental-strip-types --test tests/cms-snapshot.test.mjs tests/cms-refresh.test.mjs
       - name: Install locked dependencies
         if: steps.cms.outputs.changed == 'true'
         run: npx --yes npm@11.19.0 ci --ignore-scripts

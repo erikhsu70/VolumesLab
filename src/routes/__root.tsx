@@ -15,6 +15,7 @@ import { COMING_SOON } from "@/data/site";
 import { ComingSoon } from "@/components/site/ComingSoon";
 import { Analytics } from "@/components/site/Analytics";
 import { cmsSiteContent, applyCmsContent, cmsLookCss } from "@/lib/cms-content";
+import { startCmsRefresh } from "@/lib/cms-refresh";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -76,7 +77,7 @@ function ErrorComponent({ error, reset }: { error: unknown; reset: () => void })
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  // One CMS fetch per page load. The bundle is serialized to the client, and
+  // One CMS fetch per route load. The bundle is serialized to the client, and
   // applyCmsContent pours it over the data modules on both sides before
   // anything renders, so every page shows what the panel says. Null (CMS
   // down) preserves page copy; service visibility comes from the CMS bundle.
@@ -171,9 +172,18 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 function RootComponent() {
+  const router = useRouter();
   const { queryClient, cmsJson } = Route.useRouteContext();
   const cms = JSON.parse(cmsJson) as Awaited<ReturnType<typeof cmsSiteContent>>;
   applyCmsContent(cms);
+
+  // Static HTML hydrates a build-time snapshot without running beforeLoad.
+  // Re-run the root AND child loaders so a direct product URL gets the same
+  // current CMS data (including loader product objects) as in-app navigation.
+  useEffect(
+    () => startCmsRefresh(() => router.invalidate({ sync: true }), document, window),
+    [router],
+  );
 
   // Pre-launch gate: while COMING_SOON is on, every route (including deep
   // links people may have saved) shows the placeholder instead of the site.
