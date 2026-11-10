@@ -160,7 +160,7 @@ export const Route = createRootRouteWithContext<{
         href: "https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap",
       },
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.png?v=2", type: "image/png" },
+      { rel: "icon", href: "/favicon.png?v=3", type: "image/png", sizes: "64x64" },
     ],
   }),
   shellComponent: RootShell,
