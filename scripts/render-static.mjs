@@ -71,6 +71,9 @@ try {
   const legacy = ['/book /#tests 302', '/cart /#tests 302', '/tests /#tests 302',
     '/assessments /#assessments 302', '/memberships /#memberships 302', '/training /#train 302',
     ...['tests', 'assessments', 'medical', 'training', 'memberships'].map(p => `/${p}/:slug /:slug 301`)];
+  // The CMS renamed the same published membership from founder to Membership.
+  // Keep shared links working without changing its current canonical slug.
+  if (!completed.has('/founder') && completed.has('/Membership')) legacy.push('/founder /Membership 301');
   if (completed.has('/legal')) legacy.push('/legal/:slug /legal 302');
   await save('_redirects', [...redirects.values(), ...legacy].join('\n') + '\n');
   await save('_headers', '/*\n  Cache-Control: public, max-age=0, must-revalidate\n/assets/*\n  Cache-Control: public, max-age=31536000, immutable\n/_cms-version.json\n  Cache-Control: no-store\n');
