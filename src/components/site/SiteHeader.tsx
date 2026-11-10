@@ -23,7 +23,7 @@ export function SiteHeader() {
   // Blog and FAQ are linked from the footer only. Team stays off in
   // "Pages on / off" until its content exists.
   const navItems: NavItem[] = [
-    ...visibleSections().map((s) => ({ label: sectionLabel(s.key), hash: s.key })),
+    ...visibleSections().filter(s => s.title.trim()).map((s) => ({ label: sectionLabel(s.key), hash: s.key })),
     ...(PAGES.lab ? [{ label: "The Lab", to: "/about/lab" }] : []),
     ...(PAGES.team ? [{ label: "Team", to: "/about/team" }] : []),
   ];
@@ -42,9 +42,9 @@ export function SiteHeader() {
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden items-center gap-x-5 font-mono text-[11px] font-bold uppercase tracking-widest lg:flex">
+        <div className="hidden min-w-0 flex-wrap justify-end gap-y-2 items-center gap-x-5 font-mono text-[11px] font-bold uppercase tracking-widest lg:flex">
           {navItems.map((item) => (
-            <NavLink key={item.label} item={item} />
+            <NavLink key={item.hash ?? item.to} item={item} />
           ))}
           <BookServicesButton />
         </div>
@@ -66,7 +66,7 @@ export function SiteHeader() {
         <div className="border-t border-border px-page py-8 lg:hidden">
           <ul className="space-y-1">
             {navItems.map((item) => (
-              <li key={item.label}>
+              <li key={item.hash ?? item.to}>
                 <NavLink item={item} onNavigate={closeMobile} mobile />
               </li>
             ))}
@@ -129,3 +129,4 @@ function BookServicesButton({
     </a>
   );
 }
+

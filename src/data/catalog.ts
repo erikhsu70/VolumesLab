@@ -38,6 +38,9 @@ export type Product = {
   shortDescription?: string; // plain-language card copy (brief)
   price: number; // EUR
   priceTbd?: boolean; // true where the brief marks price [Confirm]
+  pricePeriod?: string;
+  starred?: boolean;
+  section?: string;
   duration?: string;
   durationTbd?: boolean;
   category: ProductCategory;
@@ -523,3 +526,4 @@ export function getTests(slugs: string[]): Product[] {
 export function productPath(p: Pick<Product, "slug">): string {
   return `/${p.slug}`;
 }
+

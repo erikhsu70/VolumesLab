@@ -113,7 +113,7 @@ export function structuredData(pathname: string, data: SchemaData = {}): Node | 
       url,
       name: product.name,
       description: product.tagline,
-      serviceType: product.categoryLabel,
+      serviceType: product.categoryLabel || undefined,
       provider: ref(businessId),
       mainEntityOfPage: ref(pageId),
     });
@@ -187,3 +187,4 @@ export function serializeStructuredData(value: Node): string {
     .replace(/\u2028/g, "\\u2028")
     .replace(/\u2029/g, "\\u2029");
 }
+

@@ -13,7 +13,7 @@
 // Prices and durations live on each service (src/data/catalog.ts, CMS-owned
 // since 12/09/2026), not here.
 
-export type SectionKey = "tests" | "assessments" | "medical" | "train" | "memberships";
+export type SectionKey = string;
 export const SECTION_KEYS: SectionKey[] = ["tests", "assessments", "medical", "train", "memberships"];
 
 /**
@@ -22,7 +22,7 @@ export const SECTION_KEYS: SectionKey[] = ["tests", "assessments", "medical", "t
  * Sections, since 12/09/2026, so the client can hide e.g. Train until its
  * licence exists). The title doubles as the menu and footer label.
  */
-export type HomeSection = { key: SectionKey; enabled: boolean; title: string; description: string };
+export type HomeSection = { key: SectionKey; enabled: boolean; title: string; description: string; collapsible?: boolean };
 
 /**
  * Size of the homepage heading, chosen in the CMS (client, 14/09/2026: the
@@ -216,3 +216,4 @@ export const legalPage = {
   ],
   backLink: "Back to Volumes Lab",
 };
+

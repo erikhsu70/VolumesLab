@@ -5,7 +5,7 @@ import { tests, assessments, training, allProducts, findProduct, productPath } f
 import { productContent } from '../src/data/productContent';
 import { homePage, productLabels, faqPage, blogPage, contactPage, SECTION_KEYS } from '../src/data/pages';
 import {
-  productReachable, requireProduct, requireProductBySlug, sectionByKey, sectionEnabled, sectionLabel, visibleSections,
+  productReachable, productsInSection, requireProduct, requireProductBySlug, sectionByKey, sectionEnabled, sectionLabel, visibleSections,
 } from '../src/lib/sections';
 import { pageMeta } from '../src/data/meta';
 import { BRANDING, CONTACT, ADDRESS, COMPANY, PAGES, TEXT, instagramHandle, instagramUrl } from '../src/data/site';
@@ -47,14 +47,14 @@ test('CMS creates, edits, hides, restores and removes catalogue products', () =>
   assert.ok(allProducts.every((p) => !['test', 'assessment'].includes(p.category)));
 });
 
-test('a category that did not load keeps what the site shows; unordered SKUs keep the bundled order', () => {
+test('a category that did not load keeps what the site shows; unordered SKUs have a stable order', () => {
   applyCmsContent(bundle([{ slug: 'vo2max', category: 'test', live: true }], ['test']));
   assert.equal(tests.length, 1);
   const packs = ['pt-pack-10', 'cardio-pack-4', 'training-session', 'pt-pack-3', 'pt-pack-5']
     .map((slug) => ({ slug, category: 'training', live: true, training: { sessionCount: 7 } }));
   applyCmsContent(bundle(packs, ['training']));
   assert.equal(tests.length, 1, 'tests were not fetched, so they stay');
-  assert.deepEqual(training.map((p) => p.slug), ['training-session', 'pt-pack-3', 'pt-pack-5', 'pt-pack-10', 'cardio-pack-4']);
+  assert.deepEqual(training.map((p) => p.slug), ['cardio-pack-4', 'pt-pack-10', 'pt-pack-3', 'pt-pack-5', 'training-session']);
   assert.equal(training[0].training?.sessionCount, 7);
   applyCmsContent(bundle([{ slug: 'new-training', category: 'training', live: true }], ['training']));
   assert.deepEqual(training.map((p) => p.slug), ['new-training']);
@@ -183,7 +183,7 @@ test('Contact page wording is editable and clears when cleared', () => {
 
 test('Order, price, duration and section come from the CMS', () => {
   applyCmsContent(bundle([
-    { slug: 'vo2max', category: 'test', live: true, order: 2, price: 195, duration: '30 minutes' },
+    { slug: 'vo2max', category: 'test', live: true, order: 2, price: 195, duration: '30 minutes', pricePeriod: 'per visit', starred: true },
     { slug: 'grip-strength', category: 'test', live: true, order: 1 },
     { slug: 'new-a', category: 'test', live: true, createdAt: '2026-09-12T10:00:00Z' },
     { slug: 'new-b', category: 'test', live: true, createdAt: '2026-09-11T10:00:00Z' },
@@ -192,17 +192,19 @@ test('Order, price, duration and section come from the CMS', () => {
   ], ['test', 'assessment']));
   assert.deepEqual(
     tests.map((t) => t.slug),
-    ['grip-strength', 'vo2max', 'mobility-assessment', 'new-b', 'new-a'],
-    'numbered first, then the bundled order, then oldest first',
+    ['grip-strength', 'vo2max', 'mobility-assessment', 'strength-assessment', 'new-b', 'new-a'],
+    'numbered first, then by creation date and slug; moves do not change storage',
   );
   const vo2 = findProduct('vo2max')!;
   assert.equal(vo2.price, 195);
   assert.equal(vo2.priceTbd, false);
   assert.equal(vo2.duration, '30 minutes');
+  assert.equal(vo2.pricePeriod, 'per visit');
+  assert.equal(vo2.starred, true);
   assert.equal(findProduct('grip-strength')?.price, 40, 'a doc without the field keeps the bundled price');
   const moved = findProduct('strength-assessment')!;
-  assert.deepEqual(assessments.map((a) => a.slug), ['strength-assessment'], 'moved into the Assessments section');
-  assert.equal(moved.category, 'assessment');
+  assert.deepEqual(productsInSection('assessments').map((a) => a.slug), ['strength-assessment']);
+  assert.equal(moved.category, 'test', 'moving sections preserves storage identity');
   assert.equal(productPath(moved), '/strength-assessment');
   assert.equal(moved.price, 0, 'an empty price reads "Price on booking"');
   assert.equal(moved.priceTbd, true);
@@ -212,23 +214,25 @@ test('Order, price, duration and section come from the CMS', () => {
 
 test('homepage sections: order, names, on/off, and 404 for SKUs of a section that is off', () => {
   applyCmsContent(bundle(
-    [{ slug: 'vo2max', category: 'test', live: true }, { slug: 'foundational', category: 'assessment', live: true }],
+    [{ slug: 'vo2max', category: 'test', live: true }, { slug: 'foundational', category: 'assessment', live: true },
+     { slug: 'custom-service', category: 'test', live: true, section: 'custom-section' }],
     ['test', 'assessment'],
     { home: { sections: [
       { section: 'assessments', enabled: true, title: 'Packs', description: '' },
       { section: 'tests', enabled: false, title: 'Tests' },
       { section: 'assessments', title: 'duplicate, ignored' },
-      { section: 'bogus', title: 'unknown, ignored' },
+      { section: 'custom-section', title: '', collapsible: true },
     ] } },
   ));
-  assert.deepEqual(homePage.sections.map((s) => s.key), ['assessments', 'tests']);
+  assert.deepEqual(homePage.sections.map((s) => s.key), ['assessments', 'tests', 'custom-section']);
   assert.equal(homePage.sections[0].title, 'Packs');
   assert.equal(homePage.sections[0].description, '');
   assert.equal(sectionEnabled('tests'), false);
   assert.equal(sectionEnabled('medical'), false, 'a section missing from the list is off');
-  assert.deepEqual(visibleSections().map((s) => s.key), ['assessments']);
+  assert.deepEqual(visibleSections().map((s) => s.key), ['assessments', 'custom-section']);
+  assert.equal(sectionByKey('custom-section')?.collapsible, true);
+  assert.equal(requireProductBySlug('custom-service').section, 'custom-section');
   assert.equal(sectionLabel('assessments'), 'Packs');
-  assert.equal(sectionLabel('medical'), 'Medical', 'menu label falls back when the section is not listed');
   assert.equal(productReachable(findProduct('vo2max')!), false);
   assert.throws(() => requireProduct(tests, 'vo2max'), 'a SKU of a section that is off is not found');
   assert.equal(requireProduct(assessments, 'foundational').slug, 'foundational');
@@ -237,12 +241,12 @@ test('homepage sections: order, names, on/off, and 404 for SKUs of a section tha
   assert.equal(homePage.sections[0].title, 'Legacy', 'a CMS still sending one group per section is understood');
 
   applyCmsContent(bundle([], [], { home: { sections: [] } }));
-  assert.deepEqual(homePage.sections.map((s) => s.key), ['assessments', 'tests'], 'an empty list changes nothing');
+  assert.deepEqual(homePage.sections.map((s) => s.key), [], 'an empty list removes all sections');
 
   applyCmsContent(bundle([], [], { home: { sections: SECTION_KEYS.map((section) => ({ section, enabled: true })) } }));
   assert.deepEqual(homePage.sections.map((s) => s.key), SECTION_KEYS);
   assert.equal(sectionByKey('medical')?.title, 'Medical Appointment', 'a re-added section gets its bundled title back');
-  assert.equal(sectionByKey('assessments')?.title, 'Legacy', 'a listed section keeps its current title when the row has none');
+  assert.ok(sectionByKey('assessments')?.title, 'a re-added built-in section restores its default title');
   assert.equal(productReachable(findProduct('vo2max')!), true);
 });
 

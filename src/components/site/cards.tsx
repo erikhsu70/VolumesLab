@@ -11,7 +11,7 @@ import type { Product } from "@/data/catalog";
 import { getTests, productPath } from "@/data/catalog";
 import { bookingHref, bookingLabel, bookingOpensTab, bookServicesHref, trackBooking } from "@/lib/booking";
 import { productReachable, productsInSection } from "@/lib/sections";
-import type { SectionKey } from "@/data/pages";
+import { homePage, type SectionKey } from "@/data/pages";
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
@@ -177,10 +177,10 @@ export function IncludedBadge({ children }: { children: React.ReactNode }) {
 
 function PriceLine({ p }: { p: Product }) {
   return (
-    <div className="mt-5 flex items-baseline justify-between border-t border-border pt-4">
+    <div className="mt-5 flex flex-wrap items-baseline justify-between gap-2 border-t border-border pt-4">
       <span className="font-display text-lg font-bold">
         {p.price === 0 && p.priceTbd ? "Price on booking" : `€${p.price}`}
-        {p.category === "membership" && p.price > 0 && <span className="ml-1 text-sm font-normal text-muted">/mo</span>}
+        {p.pricePeriod && <span className="ml-1 text-sm font-normal text-muted">{p.pricePeriod}</span>}
       </span>
       {p.duration && (
         <span className="font-mono text-[10px] uppercase tracking-widest text-muted">{p.duration}</span>
@@ -354,15 +354,11 @@ export function SectionProductGrid({
   if (!items.length) return null;
 
   return (
-    <div className={section === "memberships"
-      ? "grid gap-6 md:grid-cols-2"
-      : "grid gap-6 sm:grid-cols-2 lg:grid-cols-4"}>
-      {items.map((item) => section === "memberships" ? (
-        <MembershipCard key={item.slug} m={item} sourcePage={sourcePage} />
-      ) : section === "assessments" ? (
-        <AssessmentCard key={item.slug} a={item} sourcePage={sourcePage} />
-      ) : (
-        <ProductCard key={item.slug} p={item} sourcePage={sourcePage} />
+    <div className="grid auto-rows-fr gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {items.map(item => (
+        <div key={item.slug} className={item.starred && section === homePage.sections[0]?.key ? "min-w-0 lg:col-span-2" : "min-w-0"}>
+          <ProductCard p={item} sourcePage={sourcePage} />
+        </div>
       ))}
     </div>
   );
