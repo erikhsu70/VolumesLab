@@ -57,12 +57,14 @@ export function FaqList({ items }: { items: { q: string; a: string }[] }) {
 export function StickyBookBar({
   price,
   duration,
+  pricePeriod,
   href,
   ctaLabel,
   onClick,
 }: {
   price?: number;
   duration?: string;
+  pricePeriod?: string;
   href: string;
   ctaLabel: string;
   onClick?: () => void;
@@ -71,7 +73,7 @@ export function StickyBookBar({
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t border-border bg-background/95 px-4 py-3 backdrop-blur-md md:hidden">
       <div className="leading-tight">
-        <p className="font-display text-xl font-bold">{price === undefined ? "Price on booking" : `€${price}`}</p>
+        <p className="font-display text-xl font-bold">{price === undefined ? "Price on booking" : `€${price}`}{pricePeriod && <span className="ml-1 text-sm font-normal">{pricePeriod}</span>}</p>
         {duration && <p className="font-mono text-[9px] uppercase tracking-widest text-muted">{duration}</p>}
       </div>
       <a
@@ -86,3 +88,4 @@ export function StickyBookBar({
     </div>
   );
 }
+

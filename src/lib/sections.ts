@@ -44,18 +44,7 @@ export function sectionOfCategory(category: ProductCategory): SectionKey {
 
 /** The live services of a section, in CMS order. */
 export function productsInSection(key: SectionKey): Product[] {
-  switch (key) {
-    case "tests":
-      return tests;
-    case "assessments":
-      return assessments;
-    case "medical":
-      return medical;
-    case "train":
-      return training;
-    case "memberships":
-      return memberships;
-  }
+  return allProducts.filter(p => (p.section ?? sectionOfCategory(p.category)) === key && p.status !== "hidden");
 }
 
 export function sectionByKey(key: SectionKey): HomeSection | undefined {
@@ -78,16 +67,8 @@ export function visibleSections(): HomeSection[] {
 
 /** Menu and footer label of a section; the key when the title was cleared. */
 export function sectionLabel(key: SectionKey): string {
-  return sectionByKey(key)?.title || fallbackLabel[key];
+  return sectionByKey(key)?.title || `Section ${homePage.sections.findIndex(s => s.key === key) + 1}`;
 }
-
-const fallbackLabel: Record<SectionKey, string> = {
-  tests: "Tests",
-  assessments: "Assessments",
-  medical: "Medical",
-  train: "Train",
-  memberships: "Memberships",
-};
 
 /**
  * Where a generic "Book" CTA sends people: the top of the catalogue on the
@@ -99,8 +80,8 @@ export function catalogueAnchor(): string {
 }
 
 /** Whether a service's pages and links are reachable: its section is on. */
-export function productReachable(p: Pick<Product, "category">): boolean {
-  return sectionEnabled(sectionOfCategory(p.category));
+export function productReachable(p: Pick<Product, "category" | "section" | "status">): boolean {
+  return p.status !== "hidden" && sectionEnabled(p.section ?? sectionOfCategory(p.category));
 }
 
 /**
@@ -120,3 +101,4 @@ export function requireProduct(list: Product[], slug: string): Product {
 export function requireProductBySlug(slug: string): Product {
   return requireProduct(allProducts, slug);
 }
+

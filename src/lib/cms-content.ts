@@ -45,7 +45,7 @@ import {
   type HomeSection,
   type SectionKey,
 } from "@/data/pages";
-import { categoryOfSection } from "@/lib/sections";
+import { sectionOfCategory } from "@/lib/sections";
 import { pageMeta, type PageMeta, type PageMetaKey } from "@/data/meta";
 import {
   ADDRESS,
@@ -219,7 +219,10 @@ function applyProduct(target: Product, doc: CmsDoc) {
   // A service with no name would be unreachable in the panel and unreadable
   // on a card, so the name is the one product field that never goes empty.
   target.name = str(doc.name) ?? target.name;
-  target.categoryLabel = own(doc, "categoryLabel", target.categoryLabel);
+  target.categoryLabel = "";
+  target.section = str(doc.section) ?? sectionOfCategory(target.category);
+  target.pricePeriod = str(doc.pricePeriod);
+  target.starred = doc.starred === true;
   target.shortDescription = own(doc, "shortDescription", target.shortDescription ?? "");
   const badges = texts(doc.badges);
   if (badges) target.badges = badges;
@@ -340,7 +343,7 @@ function applyCatalogue(bundle: CmsBundle) {
     // "Section on the website" moves a SKU to another section without
     // re-creating it: the doc stays in its collection, the product changes
     // category, list and URL.
-    const category = sectionCategory(doc.section) ?? (doc.category as ProductCategory);
+    const category = doc.category as ProductCategory;
     if (!slug || !collections[category] || doc.live === false) continue;
     const baselineIndex = baselineProducts.findIndex((p) => p.slug === slug);
     const baseline = baselineProducts[baselineIndex];
@@ -349,7 +352,7 @@ function applyCatalogue(bundle: CmsBundle) {
       : newProduct(slug, category, doc);
     rank.set(product, {
       order: typeof doc.order === "number" ? doc.order : Number.POSITIVE_INFINITY,
-      baseline: baselineIndex === -1 ? Number.POSITIVE_INFINITY : baselineIndex,
+      baseline: Number.POSITIVE_INFINITY,
       created: str(doc.createdAt) ?? "",
     });
     applyProduct(product, doc);
@@ -377,23 +380,18 @@ function applyCatalogue(bundle: CmsBundle) {
   const byRank = (a: Product, b: Product) => {
     const ra = rank.get(a) ?? keptRank;
     const rb = rank.get(b) ?? keptRank;
-    return cmpNum(ra.order, rb.order) || cmpNum(ra.baseline, rb.baseline) || ra.created.localeCompare(rb.created);
+    return cmpNum(ra.order, rb.order) || cmpNum(ra.baseline, rb.baseline) || ra.created.localeCompare(rb.created) || a.slug.localeCompare(b.slug);
   };
   for (const [category, target] of Object.entries(collections)) {
     if (fetched.has(category))
       target.splice(0, target.length, ...next.filter((p) => p.category === category).sort(byRank));
   }
-  allProducts.splice(0, allProducts.length, ...Object.values(collections).flatMap((c) => c ?? []));
+  allProducts.splice(0, allProducts.length, ...Object.values(collections).flatMap((c) => c ?? []).sort(byRank));
 }
 
 type SortKey = { order: number; baseline: number; created: string };
 const keptRank: SortKey = { order: Number.POSITIVE_INFINITY, baseline: Number.POSITIVE_INFINITY, created: "" };
 const cmpNum = (a: number, b: number) => (a === b ? 0 : a < b ? -1 : 1);
-
-const sectionCategory = (v: unknown): ProductCategory | undefined =>
-  typeof v === "string" && (SECTION_KEYS as string[]).includes(v)
-    ? categoryOfSection[v as SectionKey]
-    : undefined;
 
 /** Array of {key: text} rows → strings; undefined when the CMS has no such field. */
 const rows = (v: unknown, key: string): string[] | undefined =>
@@ -549,18 +547,19 @@ export function applyCmsContent(bundle: CmsBundle | null) {
       const next: HomeSection[] = [];
       for (const row of h.sections as CmsDoc[]) {
         const key = row.section as SectionKey;
-        if (!SECTION_KEYS.includes(key) || seen.has(key)) continue;
+        if (typeof key !== "string" || !key || seen.has(key)) continue;
         seen.add(key);
         const current =
-          homePage.sections.find((s) => s.key === key) ?? baselineSections.find((s) => s.key === key)!;
+          homePage.sections.find((s) => s.key === key) ?? baselineSections.find((s) => s.key === key) ?? { title: "", description: "" };
         next.push({
           key,
           enabled: row.enabled !== false,
+          collapsible: row.collapsible === true,
           title: own(row, "title", current.title),
           description: own(row, "description", current.description),
         });
       }
-      if (next.length) homePage.sections = next;
+      homePage.sections = next;
     } else {
       // A CMS deploy from before 12/09/2026 still sends one group per section.
       for (const s of homePage.sections) {
@@ -695,3 +694,4 @@ export function applyCmsContent(bundle: CmsBundle | null) {
     }
   }
 }
+

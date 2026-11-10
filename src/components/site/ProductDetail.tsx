@@ -91,7 +91,6 @@ function faqs(product: Product, preparation: string[]) {
 export function ProductDetail({ product }: { product: Product }) {
   const content = getProductContent(product.slug);
   const path = productPath(product);
-  const isMembership = product.category === "membership";
   const copy = splitOutcomeCopy(content?.outcomes ?? []);
   const whatItIs = copy.whatItIs.length ? copy.whatItIs : product.measures;
   const preparation = content?.prep.length ? content.prep : copy.prep;
@@ -123,8 +122,8 @@ export function ProductDetail({ product }: { product: Product }) {
             <div className="mt-8 flex flex-wrap items-baseline gap-x-8 gap-y-2">
               <span className="font-display text-3xl font-bold">
                 {priceLabel(product)}
-                {isMembership && product.price > 0 && (
-                  <span className="ml-1 text-base font-normal text-muted">/mo</span>
+                {product.pricePeriod && (
+                  <span className="ml-1 text-base font-normal text-muted">{product.pricePeriod}</span>
                 )}
               </span>
               <span className="font-mono text-[11px] uppercase tracking-widest text-muted">
@@ -269,6 +268,7 @@ export function ProductDetail({ product }: { product: Product }) {
       <OtherProductsGrid product={product} />
 
       <StickyBookBar
+        pricePeriod={product.pricePeriod}
         price={product.price === 0 && product.priceTbd ? undefined : product.price}
         duration={product.duration}
         href={bookingHref(product)}
@@ -310,3 +310,4 @@ function OtherProductsGrid({ product }: { product: Product }) {
     </section>
   );
 }
+

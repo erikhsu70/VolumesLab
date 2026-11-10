@@ -41,7 +41,7 @@ function Home() {
 
       {/* Order, names and on/off come from the CMS (Home page → Sections). */}
       {visibleSections().map((s) => (
-        <Section key={s.key} id={s.key} title={s.title} description={s.description}>
+        <Section key={s.key} id={s.key} title={s.title} description={s.description} collapsible={s.collapsible}>
           <SectionProductGrid section={s.key} />
         </Section>
       ))}
@@ -141,24 +141,30 @@ function Section({
   title,
   description,
   children,
+  collapsible,
 }: {
   id: string;
   title: string;
   description?: string;
+  collapsible?: boolean;
   children: React.ReactNode;
 }) {
+  const heading = <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+    {title && <h2 className="font-display text-2xl font-extrabold uppercase tracking-tight md:text-3xl">{title}</h2>}
+    {description && <p className="font-mono text-[11px] uppercase tracking-widest text-muted">{description}</p>}
+  </div>;
   return (
     <section id={id} className="scroll-mt-20 border-b border-border px-page py-10 md:py-14">
       <div className="mx-auto max-w-7xl">
-        <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
-          {title && (
-            <h2 className="font-display text-2xl font-extrabold uppercase tracking-tight md:text-3xl">{title}</h2>
-          )}
-          {description && (
-            <p className="font-mono text-[11px] uppercase tracking-widest text-muted">{description}</p>
-          )}
-        </div>
-        <div className="mt-8">{children}</div>
+        {collapsible ? (
+          <details className="group">
+            <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 [&::-webkit-details-marker]:hidden" aria-label={title || `Section ${homePage.sections.findIndex(s => s.key === id) + 1}`}>
+              {heading}
+              <span aria-hidden className="shrink-0 text-2xl group-open:rotate-180">⌄</span>
+            </summary>
+            <div className="mt-8">{children}</div>
+          </details>
+        ) : <>{heading}<div className="mt-8">{children}</div></>}
       </div>
     </section>
   );
