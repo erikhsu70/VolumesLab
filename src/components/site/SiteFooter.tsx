@@ -11,34 +11,19 @@ import {
   instagramUrl,
 } from "@/data/site";
 
-// The footer is one line (client, 14/09/2026): the link columns (Services,
-// About, Visit, Contact) are gone because the site is small enough to
-// navigate from the top menu. Everything that must stay reachable from every
-// page sits in the line, in the order the client wrote it:
-//
-//   FAQ // Blog // Team // Legal & Privacy // email // phone // Instagram //
-//   registered name - tax ID // Nº Registro … // address (→ Google Maps)
-//
-// An item with no value (no phone yet, no registration number yet, a page
-// switched off) simply does not appear. The company identity and the Legal
-// link satisfy the LSSI: they are on every page, directly reachable.
-//
-// The line is a wrapping flex row, one cell per item: on a phone it breaks
-// between items and never widens the page. (The first version was one <p> of
-// adjacent nowrap spans with nothing breakable between them, which forced a
-// 1000px-wide page on every phone, 17/09/2026.)
+// Centered footer with responsive wrapping. Blog follows company/VAT details.
 
 export function SiteFooter() {
   const items = footerItems();
   return (
     <footer className="border-t border-border px-page py-10">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 lg:flex-row lg:items-center lg:gap-10">
+      <div className="mx-auto flex max-w-7xl flex-col items-center justify-center gap-6 text-center lg:flex-row lg:gap-10">
         <img src={BRANDING.mark} alt="Volumes Lab" className="w-24 shrink-0 opacity-90" />
-        <p className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[10px] uppercase leading-relaxed tracking-wider text-muted">
+        <p className="flex min-w-0 flex-wrap items-center justify-center gap-x-2 gap-y-1 font-mono text-[10px] uppercase leading-relaxed tracking-wider text-muted">
           {items.map((item, i) => (
             <span key={item.key} className="contents">
               {i > 0 && <span aria-hidden className="text-muted/60">//</span>}
-              <span className="whitespace-nowrap">{item.node}</span>
+              <span className="max-w-full break-words">{item.node}</span>
             </span>
           ))}
         </p>
@@ -57,7 +42,6 @@ function footerItems(): FooterItem[] {
   const link = "hover:text-primary";
 
   if (PAGES.faq) items.push({ key: "faq", node: <Link to="/faq" className={link}>FAQ</Link> });
-  if (PAGES.blog) items.push({ key: "blog", node: <Link to="/blog" className={link}>Blog</Link> });
   if (PAGES.team) items.push({ key: "team", node: <Link to="/about/team" className={link}>Team</Link> });
   if (PAGES.legal) {
     items.push({
@@ -105,6 +89,7 @@ function footerItems(): FooterItem[] {
   }
   const identity = companyIdentity();
   if (identity) items.push({ key: "company", node: <span className="text-foreground/80">{identity}</span> });
+  if (PAGES.blog) items.push({ key: "blog", node: <Link to="/blog" className={link}>Blog</Link> });
   if (COMPANY.registrationNumber) {
     items.push({
       key: "registration",
