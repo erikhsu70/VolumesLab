@@ -220,7 +220,7 @@ function applyProduct(target: Product, doc: CmsDoc) {
   // on a card, so the name is the one product field that never goes empty.
   target.name = str(doc.name) ?? target.name;
   target.categoryLabel = "";
-  target.section = str(doc.section) ?? sectionOfCategory(target.category);
+  target.section = "section" in doc ? (str(doc.section) ?? "") : sectionOfCategory(target.category);
   target.pricePeriod = str(doc.pricePeriod);
   target.starred = doc.starred === true;
   target.shortDescription = own(doc, "shortDescription", target.shortDescription ?? "");
