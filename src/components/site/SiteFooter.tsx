@@ -79,7 +79,6 @@ function footerItems(): FooterItem[] {
       key: "instagram",
       node: (
         <>
-          Instagram:{" "}
           <a href={instagramUrl()} target="_blank" rel="noreferrer" className={link}>
             {handle}
           </a>
