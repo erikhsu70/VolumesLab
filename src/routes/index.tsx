@@ -16,7 +16,7 @@
 // More info (→ this CMS).
 
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { SiteChrome } from "@/components/site/SiteChrome";
 import { Location } from "@/components/site/Location";
 import { SectionProductGrid } from "@/components/site/cards";
@@ -69,7 +69,8 @@ const headlineClass: Record<HeadlineSize, string> = {
 function ContactBlock() {
   return (
     <section className="border-b border-border px-page py-12 md:py-16">
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-2 lg:gap-6">
+        <div className="min-w-0">
         {homePage.headline && (
           <h1
             className={`font-display font-extrabold uppercase leading-[1.05] tracking-tight text-balance break-words ${headlineClass[homePage.headlineSize]}`}
@@ -96,8 +97,6 @@ function ContactBlock() {
           </p>
         </address>
 
-        <WaitlistForm />
-
         <dl className="mt-6 space-y-1 font-mono text-[11px] uppercase tracking-widest text-muted">
           {HOURS.weekdays.value && (
             <div className="flex flex-wrap gap-x-3">
@@ -117,6 +116,8 @@ function ContactBlock() {
             {HOURS.walkIns}
           </p>
         )}
+        </div>
+        <WaitlistForm />
       </div>
     </section>
   );
@@ -125,6 +126,8 @@ function ContactBlock() {
 /* ---------------- Momence waitlist ---------------- */
 
 function WaitlistForm() {
+  const [joined, setJoined] = useState(false);
+
   useEffect(() => {
     const style = document.createElement("style");
     style.id = "momence-waitlist-colors";
@@ -151,13 +154,14 @@ function WaitlistForm() {
         email: { type: "email", label: "Email", required: true, hidden: false, placeholder: "Email" },
       }),
     );
-    script.setAttribute("data-on-success-msg", "You have joined the Volumes Lab waitlist. ");
+    script.setAttribute("data-on-success-msg", "You joined the waitlist.");
     script.src = "https://momence.com/plugin/lead-form/lead-form.js";
     document.body.appendChild(script);
 
     // Momence owns this DOM. Normalize its generated fields after the plugin renders.
     const formRoot = document.getElementById("momence-plugin-lead-form");
     const normalizeForm = () => {
+      if (formRoot?.textContent?.includes("You joined the waitlist.")) setJoined(true);
       if (!formRoot) return;
       const fields = Array.from(formRoot.querySelectorAll<HTMLInputElement>('input:not([type="hidden"]):not([type="submit"]):not([type="checkbox"]):not([type="radio"])'));
       const placeholders = ["Name", "Surname", "Email"];
@@ -181,7 +185,7 @@ function WaitlistForm() {
       }
     };
     const observer = new MutationObserver(normalizeForm);
-    if (formRoot) observer.observe(formRoot, { childList: true, subtree: true });
+    if (formRoot) observer.observe(formRoot, { childList: true, subtree: true, characterData: true });
     normalizeForm();
 
     return () => {
@@ -192,11 +196,13 @@ function WaitlistForm() {
   }, []);
 
   return (
-    <div className="volumes-waitlist mt-6 w-full max-w-[548px] border border-border bg-card p-6 text-foreground">
-      <p className="volumes-waitlist-title text-lg font-bold leading-tight" style={{ fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif', fontWeight: 700 }}>
-        Join the Volumes Lab waitlist
-      </p>
-      <div id="momence-plugin-lead-form" className="mt-4 not-italic" />
+    <div className={`volumes-waitlist w-full min-w-0 border border-border bg-card p-6 text-foreground ${joined ? "volumes-waitlist-joined" : ""}`}>
+      {!joined && (
+        <p className="volumes-waitlist-title text-lg font-bold leading-tight" style={{ fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif', fontWeight: 700 }}>
+          Join the Volumes Lab waitlist
+        </p>
+      )}
+      <div id="momence-plugin-lead-form" className={joined ? "volumes-waitlist-success" : "mt-4"} />
     </div>
   );
 }
