@@ -146,9 +146,9 @@ function WaitlistForm() {
     script.setAttribute(
       "data-field-def",
       JSON.stringify({
-        firstName: { type: "text", label: "First Name", required: true, hidden: false, placeholder: "_" },
-        lastName: { type: "text", label: "Last Name", required: true, hidden: false, placeholder: "_" },
-        email: { type: "email", label: "Email", required: true, hidden: false, placeholder: "_" },
+        firstName: { type: "text", label: "First Name", required: true, hidden: false, placeholder: "" },
+        lastName: { type: "text", label: "Last Name", required: true, hidden: false, placeholder: "" },
+        email: { type: "email", label: "Email", required: true, hidden: false, placeholder: "" },
       }),
     );
     script.setAttribute("data-on-success-msg", "You have joined the Volumes Lab waitlist. ");
@@ -162,8 +162,8 @@ function WaitlistForm() {
   }, []);
 
   return (
-    <div className="volumes-waitlist mt-6 w-full max-w-[548px] border border-border bg-card p-6 text-foreground">
-      <p className="volumes-waitlist-title text-lg font-bold leading-tight">
+    <div className="volumes-waitlist mt-6 w-full max-w-[548px] bg-card p-6 text-foreground" style={{ border: "1px solid #212121" }}>
+      <p className="volumes-waitlist-title text-lg font-bold leading-tight" style={{ fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif', fontWeight: 700 }}>
         Join the Volumes Lab waitlist
       </p>
       <div id="momence-plugin-lead-form" className="mt-4 not-italic" />
