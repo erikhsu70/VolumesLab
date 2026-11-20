@@ -219,22 +219,25 @@ h1.service-title {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-/* Match the Momence waitlist widget to the sharp-edged Volumes product cards. */
+/* Make the waitlist look like a featured product card. */
+.volumes-waitlist-title {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: -0.035em;
+  color: var(--foreground);
+}
 .volumes-waitlist,
 .volumes-waitlist #momence-plugin-lead-form {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: var(--foreground);
 }
-.volumes-waitlist #momence-plugin-lead-form input,
-.volumes-waitlist #momence-plugin-lead-form select,
-.volumes-waitlist #momence-plugin-lead-form textarea,
-.volumes-waitlist #momence-plugin-lead-form button,
-.volumes-waitlist #momence-plugin-lead-form [role="textbox"] {
+.volumes-waitlist #momence-plugin-lead-form :is(input, select, textarea, button, fieldset, iframe, [role="textbox"], [role="button"]),
+.volumes-waitlist #momence-plugin-lead-form :is(input, select, textarea, button, fieldset, iframe, [role="textbox"], [role="button"])::before,
+.volumes-waitlist #momence-plugin-lead-form :is(input, select, textarea, button, fieldset, iframe, [role="textbox"], [role="button"])::after {
   border-radius: 0 !important;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 }
-.volumes-waitlist #momence-plugin-lead-form input,
-.volumes-waitlist #momence-plugin-lead-form select,
-.volumes-waitlist #momence-plugin-lead-form textarea {
+.volumes-waitlist #momence-plugin-lead-form :is(input, select, textarea) {
   border: 1px solid var(--border) !important;
 }
