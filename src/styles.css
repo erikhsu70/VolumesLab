@@ -276,3 +276,32 @@ h1.service-title {
   line-height: 1.25 !important;
   text-transform: none !important;
 }
+
+/* Remove widget-internal gutters so the inputs align with the title. */
+.volumes-waitlist #momence-plugin-lead-form > :first-child {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+.volumes-waitlist #momence-plugin-lead-form :is(form, form > div) {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+/* Match the service-card bottom padding below the Submit button. */
+.volumes-waitlist #momence-plugin-lead-form :is(form, form > div):last-child {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+.volumes-waitlist #momence-plugin-lead-form :is(button[type="submit"], input[type="submit"]) {
+  margin-bottom: 0 !important;
+}
+/* After success, match the service cards' body-copy font, size and color. */
+.volumes-waitlist-success,
+.volumes-waitlist-success * {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.625 !important;
+  letter-spacing: -0.012em !important;
+  text-transform: none !important;
+  color: var(--muted) !important;
+}
