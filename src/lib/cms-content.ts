@@ -10,7 +10,7 @@
 //     ticked, and a page only while it is ticked in "Pages on / off".
 //   · Since 12/09/2026 the CMS also owns each service's price, duration,
 //     section and order, and which homepage sections exist, in what order and
-//     under what name. An empty price shows "Price on booking".
+//     under what name. An empty price displays nothing.
 //   · No CMS field is mandatory. A field the editor clears is cleared on the
 //     site too, except for the handful that must never be empty for the site
 //     to work (contact email, the Momence home link, SEO titles), which fall
@@ -230,7 +230,7 @@ function applyProduct(target: Product, doc: CmsDoc) {
   if (included) target.measures = included;
 
   // Price and duration are typed in the CMS (12/09/2026). The site never read
-  // them from Momence; an empty price reads "Price on booking".
+  // them from Momence; an empty price displays nothing.
   if ("price" in doc) {
     const n = typeof doc.price === "number" ? doc.price : Number(doc.price);
     if (Number.isFinite(n) && n > 0) {
