@@ -146,23 +146,53 @@ function WaitlistForm() {
     script.setAttribute(
       "data-field-def",
       JSON.stringify({
-        firstName: { type: "text", label: "First Name", required: true, hidden: false, placeholder: "" },
-        lastName: { type: "text", label: "Last Name", required: true, hidden: false, placeholder: "" },
-        email: { type: "email", label: "Email", required: true, hidden: false, placeholder: "" },
+        firstName: { type: "text", label: "Name", required: true, hidden: false, placeholder: "Name" },
+        lastName: { type: "text", label: "Surname", required: true, hidden: false, placeholder: "Surname" },
+        email: { type: "email", label: "Email", required: true, hidden: false, placeholder: "Email" },
       }),
     );
     script.setAttribute("data-on-success-msg", "You have joined the Volumes Lab waitlist. ");
     script.src = "https://momence.com/plugin/lead-form/lead-form.js";
     document.body.appendChild(script);
 
+    // Momence owns this DOM. Normalize its generated fields after the plugin renders.
+    const formRoot = document.getElementById("momence-plugin-lead-form");
+    const normalizeForm = () => {
+      if (!formRoot) return;
+      const fields = Array.from(formRoot.querySelectorAll<HTMLInputElement>('input:not([type="hidden"]):not([type="submit"]):not([type="checkbox"]):not([type="radio"])'));
+      const placeholders = ["Name", "Surname", "Email"];
+      fields.slice(0, 3).forEach((input, i) => {
+        if (input.placeholder !== placeholders[i]) input.placeholder = placeholders[i];
+        input.setAttribute("aria-label", placeholders[i]);
+      });
+      formRoot.querySelectorAll("label").forEach((label) => {
+        const value = (label.textContent ?? "").replace(/\\*/g, "").trim().toLowerCase();
+        if (["first name", "last name", "name", "surname", "email"].includes(value) && !label.querySelector("input")) {
+          label.classList.add("volumes-waitlist-field-label");
+        }
+      });
+      const submit = formRoot.querySelector<HTMLButtonElement>('button[type="submit"], input[type="submit"]');
+      if (submit) {
+        if (submit instanceof HTMLInputElement) {
+          if (submit.value !== "Submit") submit.value = "Submit";
+        } else if (submit.textContent?.trim() !== "Submit") {
+          submit.textContent = "Submit";
+        }
+      }
+    };
+    const observer = new MutationObserver(normalizeForm);
+    if (formRoot) observer.observe(formRoot, { childList: true, subtree: true });
+    normalizeForm();
+
     return () => {
+      observer.disconnect();
       script.remove();
       style.remove();
     };
   }, []);
 
   return (
-    <div className="volumes-waitlist mt-6 w-full max-w-[548px] bg-card p-6 text-foreground" style={{ border: "1px solid #212121" }}>
+    <div className="volumes-waitlist mt-6 w-full max-w-[548px] border border-border bg-card p-6 text-foreground">
       <p className="volumes-waitlist-title text-lg font-bold leading-tight" style={{ fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif', fontWeight: 700 }}>
         Join the Volumes Lab waitlist
       </p>
