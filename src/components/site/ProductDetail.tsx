@@ -9,10 +9,6 @@ import { productsInSection, visibleSections } from "@/lib/sections";
 import { BookCta, IncludedBadge, SectionProductGrid } from "./cards";
 import { Eyebrow, FaqList, SectionTitle, StickyBookBar } from "./blocks";
 
-function priceLabel(product: Product) {
-  return product.price === 0 && product.priceTbd ? "Price on booking" : `€${product.price}`;
-}
-
 function description(product: Product) {
   return product.shortDescription || product.tagline || "Ask our team for details before booking.";
 }
@@ -120,12 +116,14 @@ export function ProductDetail({ product }: { product: Product }) {
               </div>
             )}
             <div className="mt-8 flex flex-wrap items-baseline gap-x-8 gap-y-2">
-              <span className="font-display text-3xl font-bold">
-                {priceLabel(product)}
-                {product.pricePeriod && (
-                  <span className="ml-1 text-base font-normal text-muted">{product.pricePeriod}</span>
-                )}
-              </span>
+              {product.price > 0 && (
+                <span className="font-display text-3xl font-bold">
+                  €{product.price}
+                  {product.pricePeriod && (
+                    <span className="ml-1 text-base font-normal text-muted">{product.pricePeriod}</span>
+                  )}
+                </span>
+              )}
               <span className="font-mono text-[11px] uppercase tracking-widest text-muted">
                 {product.duration || "Duration on booking"}
               </span>
@@ -138,9 +136,6 @@ export function ProductDetail({ product }: { product: Product }) {
             <div className="mt-8">
               <BookCta product={product} sourcePage={path} className="px-8 py-4 text-xs" />
             </div>
-            {product.priceTbd && L.priceTbdNote && (
-              <p className="mt-4 max-w-md text-xs leading-relaxed text-muted">{L.priceTbdNote}</p>
-            )}
           </div>
         </div>
       </section>
