@@ -9,7 +9,6 @@
 import { Link } from "@tanstack/react-router";
 import type { Product } from "@/data/catalog";
 import { getTests, productPath } from "@/data/catalog";
-import { bookingHref, bookingLabel, bookingOpensTab, bookServicesHref, trackBooking } from "@/lib/booking";
 import { productReachable, productsInSection } from "@/lib/sections";
 import { homePage, type SectionKey } from "@/data/pages";
 import { track } from "@/lib/analytics";
@@ -84,10 +83,7 @@ export function SecondaryLink({
  * "open in new tab" behave normally; analytics fire alongside.
  */
 export function BookCta({
-  product,
-  sourcePage,
   className = "",
-  label,
 }: {
   product: Product;
   sourcePage: string;
@@ -95,18 +91,17 @@ export function BookCta({
   label?: string;
 }) {
   return (
-    <a
-      href={bookingHref(product)}
-      target={bookingOpensTab() ? "_blank" : undefined}
-      rel="noreferrer"
-      onClick={() => trackBooking(product, sourcePage)}
+    <button
+      type="button"
+      disabled
+      aria-disabled="true"
       className={cn(
-        "inline-flex w-fit items-center justify-center bg-primary px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary-strong",
+        "inline-flex w-fit items-center justify-center bg-primary px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-primary-foreground cursor-not-allowed",
         className,
       )}
     >
-      {label ?? bookingLabel(product)}
-    </a>
+      Available soon
+    </button>
   );
 }
 
@@ -116,8 +111,6 @@ export function BookCta({
  * catalogue on the homepage.
  */
 export function BookServicesLink({
-  sourcePage,
-  children = "Book Services",
   className = "",
 }: {
   sourcePage: string;
@@ -125,16 +118,17 @@ export function BookServicesLink({
   className?: string;
 }) {
   return (
-    <a
-      href={bookServicesHref()}
-      onClick={() => track("book_cta_click", { product: "all", destination: "email", source_page: sourcePage })}
+    <button
+      type="button"
+      disabled
+      aria-disabled="true"
       className={cn(
-        "inline-flex w-fit items-center bg-primary px-6 py-3 font-mono text-[10px] font-bold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary-strong",
+        "inline-flex w-fit items-center bg-primary px-6 py-3 font-mono text-[10px] font-bold uppercase tracking-widest text-primary-foreground cursor-not-allowed",
         className,
       )}
     >
-      {children}
-    </a>
+      Available soon
+    </button>
   );
 }
 
