@@ -221,7 +221,7 @@ h1.service-title {
 
 /* Make the waitlist look like a featured product card. */
 .volumes-waitlist-title {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
   font-weight: 700;
   text-transform: none;
   letter-spacing: -0.035em;
@@ -240,4 +240,17 @@ h1.service-title {
 }
 .volumes-waitlist #momence-plugin-lead-form :is(input, select, textarea) {
   border: 1px solid var(--border) !important;
+}
+
+/* Match Momence submit control to the compact service CTA typography. */
+.volumes-waitlist #momence-plugin-lead-form :is(button, input[type="submit"], [type="submit"], [role="button"]) {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  line-height: 1.25 !important;
+  text-transform: uppercase !important;
+  border-radius: 0 !important;
+  padding: 10px 20px !important;
+  min-height: 0 !important;
 }
