@@ -172,10 +172,12 @@ export function IncludedBadge({ children }: { children: React.ReactNode }) {
 function PriceLine({ p }: { p: Product }) {
   return (
     <div className="mt-5 flex flex-wrap items-baseline justify-between gap-2 border-t border-border pt-4">
-      <span className="font-display text-lg font-bold">
-        {p.price === 0 && p.priceTbd ? "Price on booking" : `€${p.price}`}
-        {p.pricePeriod && <span className="ml-1 text-sm font-normal text-muted">{p.pricePeriod}</span>}
-      </span>
+      {p.price > 0 && (
+        <span className="font-display text-lg font-bold">
+          €{p.price}
+          {p.pricePeriod && <span className="ml-1 text-sm font-normal text-muted">{p.pricePeriod}</span>}
+        </span>
+      )}
       {p.duration && (
         <span className="font-mono text-[10px] uppercase tracking-widest text-muted">{p.duration}</span>
       )}
