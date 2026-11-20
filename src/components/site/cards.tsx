@@ -189,7 +189,7 @@ function PriceLine({ p }: { p: Product }) {
  */
 function CtaRow({ p, sourcePage }: { p: Product; sourcePage: string }) {
   return (
-    <div className="mt-4 grid grid-cols-2 gap-2">
+    <div className={cn("mt-4 grid grid-cols-2 gap-2", p.starred && "max-w-[260px]")}>
       <BookCta product={p} sourcePage={sourcePage} className="w-full min-w-0 px-2" />
       <MoreInfoLink product={p} className="w-full min-w-0 px-2" />
     </div>
