@@ -166,7 +166,7 @@ function WaitlistForm() {
         input.setAttribute("aria-label", placeholders[i]);
       });
       formRoot.querySelectorAll("label").forEach((label) => {
-        const value = (label.textContent ?? "").replace(/\\*/g, "").trim().toLowerCase();
+        const value = (label.textContent ?? "").replaceAll("*", "").trim().toLowerCase();
         if (["first name", "last name", "name", "surname", "email"].includes(value) && !label.querySelector("input")) {
           label.classList.add("volumes-waitlist-field-label");
         }
