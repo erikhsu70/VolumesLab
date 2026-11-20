@@ -70,7 +70,7 @@ function ContactBlock() {
   return (
     <section className="border-b border-border px-page py-12 md:py-16">
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-2 lg:gap-6">
-        <div className="flex min-w-0 flex-col justify-center">
+        <div className="flex min-w-0 flex-col justify-center pl-6 lg:pl-0">
         {homePage.headline && (
           <h1
             className={`font-display font-extrabold uppercase leading-[1.05] tracking-tight text-balance break-words ${headlineClass[homePage.headlineSize]}`}
