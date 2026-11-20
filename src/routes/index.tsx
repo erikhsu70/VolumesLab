@@ -203,7 +203,7 @@ function WaitlistForm() {
   }, []);
 
   return (
-    <div className={`volumes-waitlist w-full min-w-0 border border-border bg-card p-6 text-foreground ${joined ? "volumes-waitlist-joined" : ""}`}>
+    <div className={`volumes-waitlist w-full min-w-0 border border-border bg-card p-6 text-foreground ${joined ? "volumes-waitlist-joined lg:flex lg:min-h-[320px] lg:flex-col lg:justify-center" : ""}`}>
       {!joined && (
         <p className="volumes-waitlist-title text-lg font-bold leading-tight" style={{ fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif', fontWeight: 700 }}>
           Join the waitlist
