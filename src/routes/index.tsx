@@ -162,10 +162,10 @@ function WaitlistForm() {
   }, []);
 
   return (
-    <div className="volumes-waitlist mt-6 max-w-md text-foreground">
-      <h3 className="font-sans text-xl font-extrabold uppercase leading-tight tracking-[-0.035em] text-primary">
+    <div className="volumes-waitlist mt-6 w-full max-w-[548px] border border-border bg-card p-6 text-foreground">
+      <p className="volumes-waitlist-title text-lg font-bold leading-tight">
         Join the Volumes Lab waitlist
-      </h3>
+      </p>
       <div id="momence-plugin-lead-form" className="mt-4 not-italic" />
     </div>
   );
