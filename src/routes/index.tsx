@@ -70,7 +70,7 @@ function ContactBlock() {
   return (
     <section className="border-b border-border px-page py-12 md:py-16">
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-2 lg:gap-6">
-        <div className="min-w-0">
+        <div className="flex min-w-0 flex-col justify-center">
         {homePage.headline && (
           <h1
             className={`font-display font-extrabold uppercase leading-[1.05] tracking-tight text-balance break-words ${headlineClass[homePage.headlineSize]}`}
@@ -165,6 +165,12 @@ function WaitlistForm() {
       if (!formRoot) return;
       const fields = Array.from(formRoot.querySelectorAll<HTMLInputElement>('input:not([type="hidden"]):not([type="submit"]):not([type="checkbox"]):not([type="radio"])'));
       const placeholders = ["Name", "Surname", "Email"];
+      const heading = formRoot.closest(".volumes-waitlist")?.querySelector<HTMLElement>(".volumes-waitlist-title");
+      if (heading && fields[0]) {
+        const offset = Math.max(0, Math.round(fields[0].getBoundingClientRect().left - formRoot.getBoundingClientRect().left));
+        const margin = String(offset) + "px";
+        if (heading.style.marginLeft !== margin) heading.style.marginLeft = margin;
+      }
       fields.slice(0, 3).forEach((input, i) => {
         if (input.placeholder !== placeholders[i]) input.placeholder = placeholders[i];
         input.setAttribute("aria-label", placeholders[i]);
@@ -199,7 +205,7 @@ function WaitlistForm() {
     <div className={`volumes-waitlist w-full min-w-0 border border-border bg-card p-6 text-foreground ${joined ? "volumes-waitlist-joined" : ""}`}>
       {!joined && (
         <p className="volumes-waitlist-title text-lg font-bold leading-tight" style={{ fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif', fontWeight: 700 }}>
-          Join the Volumes Lab waitlist
+          Join the waitlist
         </p>
       )}
       <div id="momence-plugin-lead-form" className={joined ? "volumes-waitlist-success" : "mt-4"} />
