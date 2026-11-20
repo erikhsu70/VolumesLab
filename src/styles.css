@@ -218,3 +218,23 @@ h1, h2, h3, h4, h5, h6 {
 h1.service-title {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+
+/* Match the Momence waitlist widget to the sharp-edged Volumes product cards. */
+.volumes-waitlist,
+.volumes-waitlist #momence-plugin-lead-form {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--foreground);
+}
+.volumes-waitlist #momence-plugin-lead-form input,
+.volumes-waitlist #momence-plugin-lead-form select,
+.volumes-waitlist #momence-plugin-lead-form textarea,
+.volumes-waitlist #momence-plugin-lead-form button,
+.volumes-waitlist #momence-plugin-lead-form [role="textbox"] {
+  border-radius: 0 !important;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+.volumes-waitlist #momence-plugin-lead-form input,
+.volumes-waitlist #momence-plugin-lead-form select,
+.volumes-waitlist #momence-plugin-lead-form textarea {
+  border: 1px solid var(--border) !important;
+}
