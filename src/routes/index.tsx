@@ -16,6 +16,7 @@
 // More info (→ this CMS).
 
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { SiteChrome } from "@/components/site/SiteChrome";
 import { Location } from "@/components/site/Location";
 import { SectionProductGrid } from "@/components/site/cards";
@@ -95,6 +96,8 @@ function ContactBlock() {
           </p>
         </address>
 
+        <WaitlistForm />
+
         <dl className="mt-6 space-y-1 font-mono text-[11px] uppercase tracking-widest text-muted">
           {HOURS.weekdays.value && (
             <div className="flex flex-wrap gap-x-3">
@@ -116,6 +119,53 @@ function ContactBlock() {
         )}
       </div>
     </section>
+  );
+}
+
+/* ---------------- Momence waitlist ---------------- */
+
+function WaitlistForm() {
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.id = "momence-waitlist-colors";
+    style.textContent = `:root {
+      --momenceColorBackground: #F7F5F6;
+      --momenceColorPrimary: 33, 33, 33;
+      --momenceColorBlack: 3, 1, 13;
+    }`;
+    document.head.appendChild(style);
+
+    const script = document.createElement("script");
+    script.id = "momence-plugin-lead-form-src";
+    script.type = "module";
+    script.async = true;
+    script.setAttribute("host_id", "319187");
+    script.setAttribute("fields", "firstName,lastName,email");
+    script.setAttribute("token", "KajVVpeQjP");
+    script.setAttribute("country_code", "es");
+    script.setAttribute(
+      "data-field-def",
+      JSON.stringify({
+        firstName: { type: "text", label: "First Name", required: true, hidden: false, placeholder: "_" },
+        lastName: { type: "text", label: "Last Name", required: true, hidden: false, placeholder: "_" },
+        email: { type: "email", label: "Email", required: true, hidden: false, placeholder: "_" },
+      }),
+    );
+    script.setAttribute("data-on-success-msg", "You have joined the Volumes Lab waitlist. ");
+    script.src = "https://momence.com/plugin/lead-form/lead-form.js";
+    document.body.appendChild(script);
+
+    return () => {
+      script.remove();
+      style.remove();
+    };
+  }, []);
+
+  return (
+    <div className="mt-1 max-w-md text-base leading-relaxed text-foreground/85">
+      <p>Join the waitlist</p>
+      <div id="momence-plugin-lead-form" className="mt-3 not-italic" />
+    </div>
   );
 }
 
