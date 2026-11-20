@@ -189,9 +189,9 @@ function PriceLine({ p }: { p: Product }) {
  */
 function CtaRow({ p, sourcePage }: { p: Product; sourcePage: string }) {
   return (
-    <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
-      <BookCta product={p} sourcePage={sourcePage} />
-      <MoreInfoLink product={p} />
+    <div className="mt-4 grid grid-cols-2 gap-2">
+      <BookCta product={p} sourcePage={sourcePage} className="w-full min-w-0 px-2" />
+      <MoreInfoLink product={p} className="w-full min-w-0 px-2" />
     </div>
   );
 }
@@ -293,9 +293,9 @@ export function MembershipCard({ m, sourcePage = "/" }: { m: Product; sourcePage
       {m.membership?.commitment && (
         <p className="mt-6 font-mono text-[10px] uppercase tracking-widest text-muted">{m.membership.commitment}</p>
       )}
-      <div className="mt-6 flex flex-wrap gap-2">
-        <BookCta product={m} sourcePage={sourcePage} className="px-6 py-3" />
-        <MoreInfoLink product={m} className="px-6 py-3" />
+      <div className="mt-6 grid grid-cols-2 gap-2">
+        <BookCta product={m} sourcePage={sourcePage} className="w-full min-w-0 px-2 py-3" />
+        <MoreInfoLink product={m} className="w-full min-w-0 px-2 py-3" />
       </div>
     </article>
   );
