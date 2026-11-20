@@ -254,3 +254,25 @@ h1.service-title {
   padding: 10px 20px !important;
   min-height: 0 !important;
 }
+
+/* Waitlist card: subdued border at rest, black on hover/focus like service cards. */
+.volumes-waitlist {
+  transition: border-color 0.15s ease;
+}
+@media (hover: hover) {
+  .volumes-waitlist:hover { border-color: var(--foreground); }
+}
+.volumes-waitlist:focus-within { border-color: var(--foreground); }
+@media (prefers-reduced-motion: reduce) {
+  .volumes-waitlist { transition: none; }
+}
+/* Placeholders replace visible field labels without removing accessible names. */
+.volumes-waitlist .volumes-waitlist-field-label { display: none !important; }
+/* Exact vertical sizing used by service-card CTAs: 10px type, 10px top/bottom padding. */
+.volumes-waitlist #momence-plugin-lead-form :is(button[type="submit"], input[type="submit"]) {
+  padding: 10px 20px !important;
+  height: auto !important;
+  min-height: 0 !important;
+  line-height: 1.25 !important;
+  text-transform: none !important;
+}
