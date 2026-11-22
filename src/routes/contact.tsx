@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { pageGate } from "@/lib/pages";
 import { SiteChrome } from "@/components/site/SiteChrome";
 import { metaTags } from "@/data/meta";
-import { ADDRESS, CONTACT, HOURS, MAP_EMBED } from "@/data/site";
+import { ADDRESS, CONTACT, HOURS, MAP_LINK } from "@/data/site";
 import { contactPage as C } from "@/data/pages";
 import { Eyebrow } from "@/components/site/blocks";
 import { useState } from "react";
@@ -35,9 +35,9 @@ function Contact() {
       )}
 
       <section className="px-page py-24">
-        <div className="mx-auto grid max-w-7xl gap-16 md:grid-cols-2">
+        <div className="mx-auto max-w-7xl">
           <div className="space-y-10">
-            {ADDRESS.full && <InfoRow label="Address" value={<Lines text={addressLines(ADDRESS.full)} />} />}
+            {ADDRESS.full && <InfoRow label="Address" value={<a href={MAP_LINK} target="_blank" rel="noreferrer" className="hover:underline"><Lines text={addressLines(ADDRESS.full)} /></a>} />}
             {C.gettingHere && <InfoRow label="Getting here" value={<Lines text={C.gettingHere} />} />}
             <InfoRow label="Email" value={<a className="hover:opacity-70" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>} />
 {/* Phone and WhatsApp removed site-wide (30/08) until a real number exists. */}
@@ -76,20 +76,7 @@ function Contact() {
             </form>
           </div>
 
-          <div className="space-y-10">
-            <div className="min-h-[420px]">
-              <iframe
-                title="Volumes Lab map"
-                src={MAP_EMBED}
-                className="h-full min-h-[420px] w-full grayscale-[.2]"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
 
-{/* "Who you'll meet" hidden with the team view (client request, 24/08).
-                Restore from git history when the team content is real. */}
-          </div>
         </div>
       </section>
     </SiteChrome>
