@@ -345,7 +345,7 @@ h1.health-check-detail-title {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  align-items: center;
+  align-items: baseline;
   justify-content: center;
   gap: 2rem;
   min-height: 0;
