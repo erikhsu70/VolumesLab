@@ -12,7 +12,18 @@ export async function captureCms() {
   const responses = {};
   async function read(path) {
     const response = await fetch(CMS + path, { signal: AbortSignal.timeout(15000) });
-    if (!response.ok) throw new Error(`CMS unavailable: ${path} (${response.status})`);
+    if (!response.ok) {
+      // FAQ is non-critical for publishing the website. During a FAQ CMS
+      // schema incident, render the bundled FAQ copy instead of blocking
+      // all website releases. Other CMS endpoints remain mandatory.
+      if (path.startsWith('/api/faqs?') && response.status >= 500) {
+        console.warn(`FAQ CMS unavailable (${response.status}); using bundled website FAQs`);
+        const fallback = { __unavailable: true, docs: [], hasNextPage: false };
+        responses[path] = fallback;
+        return fallback;
+      }
+      throw new Error(`CMS unavailable: ${path} (${response.status})`);
+    }
     const value = await response.json();
     if (!value || typeof value !== 'object') throw new Error(`Invalid CMS response: ${path}`);
     responses[path] = value;

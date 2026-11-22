@@ -8,5 +8,8 @@ globalThis.fetch = async (input, init) => {
   if (url.origin !== CMS) return realFetch(input, init);
   const key = url.pathname + url.search;
   if (!Object.hasOwn(responses, key)) throw new Error(`Unsnapshotted CMS request: ${key}`);
+  if (responses[key]?.__unavailable) {
+    return Response.json({ error: 'CMS resource temporarily unavailable' }, { status: 503 });
+  }
   return Response.json(responses[key]);
 };
