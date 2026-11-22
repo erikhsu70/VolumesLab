@@ -78,7 +78,30 @@ try {
   await save('_redirects', [...redirects.values(), ...legacy].join('\n') + '\n');
   await save('_headers', '/*\n  Cache-Control: public, max-age=0, must-revalidate\n/assets/*\n  Cache-Control: public, max-age=31536000, immutable\n/_cms-version.json\n  Cache-Control: no-store\n');
   // Never publish a mixed/outdated snapshot if an editor saved during rendering.
-  if ((await captureCms()).hash !== snapshot.hash) throw new Error('CMS changed during build; next sync will retry');
+  const fresh = await captureCms();
+  if (fresh.hash !== snapshot.hash) {
+    // A temporarily failing FAQ endpoint is represented by a stable
+    // unavailable marker. If it recovers mid-build (or fails again), do not
+    // block unrelated website changes. All other CMS content must match.
+    const faqPath = '/api/faqs?limit=200&depth=0';
+    const originalFaq = snapshot.responses[faqPath];
+    const freshFaq = fresh.responses[faqPath];
+    const faqWasUnavailable = originalFaq?.__unavailable || freshFaq?.__unavailable;
+    if (!faqWasUnavailable) {
+      throw new Error('CMS changed during build; next sync will retry');
+    }
+    const withoutFaq = (responses) =>
+      Object.fromEntries(Object.entries(responses).filter(([key]) => key !== faqPath));
+    const { createHash } = await import('node:crypto');
+    const canonical = (v) => Array.isArray(v) ? v.map(canonical) : v && typeof v === 'object'
+      ? Object.fromEntries(Object.keys(v).sort().map(k => [k, canonical(v[k])])) : v;
+    const digest = (responses) => createHash('sha256')
+      .update(JSON.stringify(canonical(withoutFaq(responses)))).digest('hex');
+    if (digest(snapshot.responses) !== digest(fresh.responses)) {
+      throw new Error('CMS changed during build; next sync will retry');
+    }
+    console.warn('FAQ availability changed during rendering; publishing unchanged non-FAQ content');
+  }
   await save('_cms-version.json', JSON.stringify({hash: snapshot.hash, commit: process.env.GITHUB_SHA || 'local', generatedAt: new Date().toISOString(), pages: completed.size}));
   console.log(`Prepared ${completed.size} HTML pages, sitemap, redirects and 404; no runtime rendering.`);
 } finally {
