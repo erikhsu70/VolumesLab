@@ -202,7 +202,7 @@ function CtaRow({ p, sourcePage }: { p: Product; sourcePage: string }) {
 
 export function ProductCard({ p, sourcePage = "/", compact = false }: { p: Product; sourcePage?: string; compact?: boolean }) {
   return (
-    <article className={cn("product-card flex h-full min-w-0 flex-col break-words border border-border bg-card", compact ? "p-2.5" : "p-6")}>
+    <article className={cn("product-card flex h-full min-w-0 flex-col break-words border border-border bg-card", compact ? "pb-2.5 pl-6 pr-2.5 pt-6" : "p-6")}>
       <h3 className="font-display text-lg font-bold uppercase leading-tight">{p.name}</h3>
       {p.shortDescription?.trim() && (
         <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted">{p.shortDescription}</p>
@@ -216,7 +216,17 @@ export function ProductCard({ p, sourcePage = "/", compact = false }: { p: Produ
         </div>
       )}
       <PriceLine p={p} />
-      <CtaRow p={p} sourcePage={sourcePage} />
+      {compact ? (
+        <Link
+          to={productPath(p)}
+          onClick={() => track("health_check_click", { product: p.slug, source_page: sourcePage })}
+          className="mt-4 inline-flex w-fit items-center justify-center bg-primary px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary-strong"
+        >
+          Book Health Check
+        </Link>
+      ) : (
+        <CtaRow p={p} sourcePage={sourcePage} />
+      )}
     </article>
   );
 }
