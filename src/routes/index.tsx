@@ -58,9 +58,9 @@ function Home() {
 function ContactBlock() {
   const healthCheck = healthCheckProduct();
   return (
-    <section className="flex flex-1 items-center justify-center border-b border-border px-4 py-4 md:px-12 md:py-6">
-      <div className="mx-auto w-full max-w-7xl">
-        <div className="home-contact-cards grid w-full items-stretch gap-4 md:grid-cols-2 md:gap-6">
+    <section className="flex flex-1 items-center justify-center min-h-0 border-b border-border px-4 py-4 md:px-12 md:py-6">
+      <div className="mx-auto h-full w-full max-w-7xl md:h-auto">
+        <div className="home-contact-cards grid h-full min-h-0 w-full grid-rows-2 items-stretch gap-4 md:h-auto md:grid-rows-none md:grid-cols-2 md:gap-6">
           <WaitlistForm />
           {healthCheck && (
             <ProductCard p={healthCheck} sourcePage="/" compact />
