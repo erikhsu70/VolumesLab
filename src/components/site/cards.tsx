@@ -206,7 +206,7 @@ export function ProductCard({ p, sourcePage = "/", compact = false }: { p: Produ
       <Link
         to={productPath(p)}
         onClick={() => track("health_check_click", { product: p.slug, source_page: sourcePage })}
-        className="product-card health-check-featured flex h-full min-w-0 flex-col break-words border border-border bg-card px-6 pb-2.5 pt-6 text-center"
+        className="product-card health-check-featured flex h-full min-w-0 flex-col break-words border border-border bg-card px-6 pb-6 pt-6 text-center"
       >
         <h3 className="font-display text-lg font-bold uppercase leading-tight">{p.name}</h3>
         <div className="health-check-copy flex flex-1 flex-col justify-center">

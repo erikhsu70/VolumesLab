@@ -341,8 +341,16 @@ h1.health-check-detail-title {
   padding-block: 1rem;
 }
 .health-check-featured > .border-t {
+  /* Keep price and duration evenly spread through the vertical space between
+     the horizontal divider and the booking CTA, in the featured card only. */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 0.3rem;
+  min-height: 4.75rem;
   margin-top: 0;
-  justify-content: center;
+  padding: 0.75rem 0 0.4rem;
 }
 
 /* Share desktop rows: title, name, surname, email/price, then both CTAs.
@@ -388,7 +396,6 @@ h1.health-check-detail-title {
   .home-contact-cards .health-check-featured > .border-t {
     grid-row: 4;
     align-content: center;
-    padding-top: 0;
   }
   .home-contact-cards .health-check-featured > .volumes-cta {
     grid-row: -2 / -1;
