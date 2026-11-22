@@ -200,9 +200,9 @@ function CtaRow({ p, sourcePage }: { p: Product; sourcePage: string }) {
 
 /* ---------------- Product card (tests / medical / training) ---------------- */
 
-export function ProductCard({ p, sourcePage = "/" }: { p: Product; sourcePage?: string }) {
+export function ProductCard({ p, sourcePage = "/", compact = false }: { p: Product; sourcePage?: string; compact?: boolean }) {
   return (
-    <article className="product-card flex h-full min-w-0 flex-col break-words border border-border bg-card p-6">
+    <article className={cn("product-card flex h-full min-w-0 flex-col break-words border border-border bg-card", compact ? "p-2.5" : "p-6")}>
       <h3 className="font-display text-lg font-bold uppercase leading-tight">{p.name}</h3>
       {p.shortDescription?.trim() && (
         <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted">{p.shortDescription}</p>
