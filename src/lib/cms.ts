@@ -124,15 +124,18 @@ export async function cmsPost(slug: string): Promise<Post | undefined> {
 
 import { faqGroups as bundledFaqGroups } from "@/data/faq";
 
-type CmsFaq = { group: string; question: string; answer: string; order: number };
+type CmsFaq = { group: string; question: string; answer: string; order: number; enabled?: boolean | null };
 
 export async function cmsFaqGroups(): Promise<typeof bundledFaqGroups> {
   const res = await fetchCms<{ docs: CmsFaq[] }>("/api/faqs?limit=200&depth=0");
-  if (!res?.docs?.length) return bundledFaqGroups;
+  if (!res || !Array.isArray(res.docs)) return bundledFaqGroups;
+  // A valid empty CMS result means nothing is published; never restore hidden FAQs from bundled defaults.
 
   // Group rows preserving first-seen group order, items by their order field.
   const groups = new Map<string, { q: string; a: string; order: number }[]>();
   for (const f of res.docs) {
+    if (f.enabled === false) continue;
+    if (!f.question?.trim() || !f.answer?.trim()) continue;
     if (!groups.has(f.group)) groups.set(f.group, []);
     groups.get(f.group)!.push({ q: f.question, a: f.answer, order: f.order ?? 0 });
   }
