@@ -18,11 +18,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteChrome } from "@/components/site/SiteChrome";
-import { Location } from "@/components/site/Location";
-import { SectionProductGrid } from "@/components/site/cards";
-import { ADDRESS, CONTACT, HOURS, MAP_LINK } from "@/data/site";
+import { ProductCard, SectionProductGrid } from "@/components/site/cards";
 import { homePage, type HeadlineSize } from "@/data/pages";
 import { visibleSections } from "@/lib/sections";
+import { healthCheckProduct } from "@/lib/health-check";
 import { canonical } from "@/lib/seo";
 import { metaTags } from "@/data/meta";
 
@@ -35,6 +34,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const healthCheck = healthCheckProduct();
   return (
     <SiteChrome>
       <ContactBlock />
@@ -43,11 +43,10 @@ function Home() {
       {/* Order, names and on/off come from the CMS (Home page → Sections). */}
       {visibleSections().map((s) => (
         <Section key={s.key} id={s.key} title={s.title} description={s.description} collapsible={s.collapsible}>
-          <SectionProductGrid section={s.key} />
+          <SectionProductGrid section={s.key} excludeSlug={healthCheck?.slug} />
         </Section>
       ))}
 
-      <Location />
     </SiteChrome>
   );
 }
@@ -67,57 +66,23 @@ const headlineClass: Record<HeadlineSize, string> = {
 // logo here, the header carries it; the map moved to the Location section at
 // the bottom of the page.
 function ContactBlock() {
+  const healthCheck = healthCheckProduct();
   return (
     <section className="border-b border-border px-page py-12 md:py-16">
-      <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-2 lg:gap-6">
-        <div className="flex min-w-0 flex-col justify-center pl-6 lg:pl-0">
+      <div className="mx-auto max-w-7xl">
         {homePage.headline && (
-          <h1
-            className={`font-display font-extrabold uppercase leading-[1.05] tracking-tight text-balance break-words ${headlineClass[homePage.headlineSize]}`}
-          >
+          <h1 className={`mb-8 font-display font-extrabold uppercase leading-[1.05] tracking-tight text-balance break-words ${headlineClass[homePage.headlineSize]}`}>
             {homePage.headline}
           </h1>
         )}
-
-        <address className="mt-6 space-y-1 text-base not-italic leading-relaxed text-foreground/85">
-          <p>
-            <a
-              href={MAP_LINK}
-              target="_blank"
-              rel="noreferrer"
-              className="underline decoration-foreground/30 underline-offset-4 hover:text-foreground hover:decoration-foreground"
-            >
-              {ADDRESS.short}
-            </a>
-          </p>
-          <p>
-            <a href={`mailto:${CONTACT.email}`} className="hover:text-primary">
-              {CONTACT.email}
-            </a>
-          </p>
-        </address>
-
-        <dl className="mt-6 space-y-1 font-mono text-[11px] uppercase tracking-widest text-muted">
-          {HOURS.weekdays.value && (
-            <div className="flex flex-wrap gap-x-3">
-              <dt>Open {HOURS.weekdays.label}</dt>
-              <dd className="tabular-nums text-foreground">{HOURS.weekdays.value}</dd>
+        <div className="grid items-stretch gap-6 md:grid-cols-2">
+          <WaitlistForm />
+          {healthCheck && (
+            <div className="min-w-0">
+              <ProductCard p={healthCheck} sourcePage="/" />
             </div>
           )}
-          {HOURS.weekend.value && (
-            <div className="flex flex-wrap gap-x-3">
-              <dt>{HOURS.weekend.label}</dt>
-              <dd className="tabular-nums text-foreground">{HOURS.weekend.value}</dd>
-            </div>
-          )}
-        </dl>
-        {HOURS.walkIns && (
-          <p className="mt-4 font-mono text-[11px] font-bold uppercase tracking-widest text-primary">
-            {HOURS.walkIns}
-          </p>
-        )}
         </div>
-        <WaitlistForm />
       </div>
     </section>
   );
@@ -166,12 +131,6 @@ function WaitlistForm() {
       if (!formRoot) return;
       const fields = Array.from(formRoot.querySelectorAll<HTMLInputElement>('input:not([type="hidden"]):not([type="submit"]):not([type="checkbox"]):not([type="radio"])'));
       const placeholders = ["Name", "Surname", "Email"];
-      const heading = formRoot.closest(".volumes-waitlist")?.querySelector<HTMLElement>(".volumes-waitlist-title");
-      if (heading && fields[0]) {
-        const offset = Math.max(0, Math.round(fields[0].getBoundingClientRect().left - formRoot.getBoundingClientRect().left));
-        const margin = String(offset) + "px";
-        if (heading.style.marginLeft !== margin) heading.style.marginLeft = margin;
-      }
       fields.slice(0, 3).forEach((input, i) => {
         if (input.placeholder !== placeholders[i]) input.placeholder = placeholders[i];
         input.setAttribute("aria-label", placeholders[i]);
@@ -185,9 +144,9 @@ function WaitlistForm() {
       const submit = formRoot.querySelector<HTMLButtonElement>('button[type="submit"], input[type="submit"]');
       if (submit) {
         if (submit instanceof HTMLInputElement) {
-          if (submit.value !== "Submit") submit.value = "Submit";
-        } else if (submit.textContent?.trim() !== "Submit") {
-          submit.textContent = "Submit";
+          if (submit.value !== "Join the waitlist") submit.value = "Join the waitlist";
+        } else if (submit.textContent?.trim() !== "Join the waitlist") {
+          submit.textContent = "Join the waitlist";
         }
       }
     };
@@ -203,13 +162,8 @@ function WaitlistForm() {
   }, []);
 
   return (
-    <div className={`volumes-waitlist w-full min-w-0 border border-border bg-card p-6 text-foreground ${joined ? "volumes-waitlist-joined lg:flex lg:min-h-[320px] lg:flex-col lg:justify-center" : ""}`}>
-      {!joined && (
-        <p className="volumes-waitlist-title text-lg font-bold leading-tight" style={{ fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif', fontWeight: 700 }}>
-          Join the waitlist
-        </p>
-      )}
-      <div id="momence-plugin-lead-form" className={joined ? "volumes-waitlist-success" : "mt-4"} />
+    <div className={`volumes-waitlist flex min-h-[320px] w-full min-w-0 flex-col justify-center border border-border bg-card p-6 text-foreground ${joined ? "volumes-waitlist-joined" : ""}`}>
+      <div id="momence-plugin-lead-form" className={joined ? "volumes-waitlist-success" : ""} />
     </div>
   );
 }
