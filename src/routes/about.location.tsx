@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { pageGate } from "@/lib/pages";
 import { SiteChrome } from "@/components/site/SiteChrome";
 import { metaTags } from "@/data/meta";
-import { ADDRESS, CONTACT, HOURS, MAP_EMBED } from "@/data/site";
+import { ADDRESS, CONTACT, HOURS, MAP_LINK } from "@/data/site";
 import { BookServicesLink } from "@/components/site/cards";
 import { Eyebrow, SectionTitle } from "@/components/site/blocks";
 
@@ -43,23 +43,14 @@ function LocationPage() {
         </div>
       </section>
       <section className="px-page py-16">
-        <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-2">
-          <div className="border border-border bg-card">
-            <iframe
-              title={`Volumes Lab, ${ADDRESS.full}`}
-              src={MAP_EMBED}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="block h-[320px] w-full md:h-[420px]"
-            />
-          </div>
+        <div className="mx-auto max-w-7xl">
           <dl className="divide-y divide-border border-y border-border">
             {info.map((row) => (
               <div key={row.label} className="py-5">
                 <dt className="font-mono text-[10px] uppercase tracking-widest text-muted">
                   {row.label}
                 </dt>
-                <dd className="mt-1 text-base text-foreground/85">{row.value}</dd>
+                <dd className="mt-1 text-base text-foreground/85">{row.label === "Address" ? <a href={MAP_LINK} target="_blank" rel="noreferrer" className="hover:underline">{row.value}</a> : row.label === "Contact" ? <a href={`mailto:${CONTACT.email}`} className="hover:underline">{row.value}</a> : row.value}</dd>
               </div>
             ))}
           </dl>
