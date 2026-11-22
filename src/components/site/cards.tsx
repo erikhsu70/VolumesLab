@@ -201,8 +201,33 @@ function CtaRow({ p, sourcePage }: { p: Product; sourcePage: string }) {
 /* ---------------- Product card (tests / medical / training) ---------------- */
 
 export function ProductCard({ p, sourcePage = "/", compact = false }: { p: Product; sourcePage?: string; compact?: boolean }) {
+  if (compact) {
+    return (
+      <Link
+        to={productPath(p)}
+        onClick={() => track("health_check_click", { product: p.slug, source_page: sourcePage })}
+        className="product-card flex h-full min-w-0 flex-col break-words border border-border bg-card pb-2.5 pl-6 pr-2.5 pt-6"
+      >
+        <h3 className="font-display text-lg font-bold uppercase leading-tight">{p.name}</h3>
+        {p.shortDescription?.trim() && (
+          <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted">{p.shortDescription}</p>
+        )}
+        <div className="flex-1" aria-hidden />
+        {p.badges && p.badges.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {p.badges.map((badge) => <IncludedBadge key={badge}>{badge}</IncludedBadge>)}
+          </div>
+        )}
+        <PriceLine p={p} />
+        <span className="volumes-cta mx-auto mt-4 inline-flex items-center justify-center bg-primary font-mono text-[10px] font-bold uppercase tracking-widest text-primary-foreground">
+          Book Health Check
+        </span>
+      </Link>
+    );
+  }
+
   return (
-    <article className={cn("product-card flex h-full min-w-0 flex-col break-words border border-border bg-card", compact ? "pb-2.5 pl-6 pr-2.5 pt-6" : "p-6")}>
+    <article className="product-card flex h-full min-w-0 flex-col break-words border border-border bg-card p-6">
       <h3 className="font-display text-lg font-bold uppercase leading-tight">{p.name}</h3>
       {p.shortDescription?.trim() && (
         <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted">{p.shortDescription}</p>
@@ -210,23 +235,11 @@ export function ProductCard({ p, sourcePage = "/", compact = false }: { p: Produ
       <div className="flex-1" aria-hidden />
       {p.badges && p.badges.length > 0 && (
         <div className="mt-4 flex flex-wrap gap-2">
-          {p.badges.map((b) => (
-            <IncludedBadge key={b}>{b}</IncludedBadge>
-          ))}
+          {p.badges.map((badge) => <IncludedBadge key={badge}>{badge}</IncludedBadge>)}
         </div>
       )}
       <PriceLine p={p} />
-      {compact ? (
-        <Link
-          to={productPath(p)}
-          onClick={() => track("health_check_click", { product: p.slug, source_page: sourcePage })}
-          className="volumes-cta mt-4 inline-flex items-center justify-center bg-primary font-mono text-[10px] font-bold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary-strong"
-        >
-          Book Health Check
-        </Link>
-      ) : (
-        <CtaRow p={p} sourcePage={sourcePage} />
-      )}
+      <CtaRow p={p} sourcePage={sourcePage} />
     </article>
   );
 }

@@ -320,3 +320,9 @@ h1.service-title {
   line-height: 1 !important;
   font-size: 10px !important;
 }
+
+/* Keep Momence's embedded submit centered within the waitlist card. */
+.volumes-waitlist #momence-plugin-lead-form :is(button[type="submit"], input[type="submit"]) {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
