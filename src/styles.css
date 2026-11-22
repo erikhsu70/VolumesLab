@@ -305,3 +305,18 @@ h1.service-title {
   text-transform: none !important;
   color: var(--muted) !important;
 }
+
+/* Uniform compact CTAs: header, Health Check, and embedded waitlist submit. */
+.volumes-cta,
+.volumes-waitlist #momence-plugin-lead-form :is(button[type="submit"], input[type="submit"]) {
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 180px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 8px !important;
+  line-height: 1 !important;
+  font-size: 10px !important;
+}

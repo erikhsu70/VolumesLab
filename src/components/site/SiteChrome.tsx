@@ -15,7 +15,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
       ? structuredData(match.pathname, (match.loaderData ?? {}) as SchemaData)
       : null;
   return (
-    <div className="min-h-screen bg-background font-sans text-foreground selection:bg-primary selection:text-primary-foreground">
+    <div className="flex min-h-dvh flex-col bg-background font-sans text-foreground selection:bg-primary selection:text-primary-foreground">
       {schema && (
         <script
           type="application/ld+json"
@@ -23,7 +23,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
         />
       )}
       <SiteHeader />
-      <main>{children}</main>
+      <main className="flex min-w-0 flex-1 flex-col [&>:last-child]:border-b-0">{children}</main>
       <SiteFooter />
     </div>
   );

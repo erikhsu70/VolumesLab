@@ -220,7 +220,7 @@ export function ProductCard({ p, sourcePage = "/", compact = false }: { p: Produ
         <Link
           to={productPath(p)}
           onClick={() => track("health_check_click", { product: p.slug, source_page: sourcePage })}
-          className="mt-4 inline-flex w-fit items-center justify-center bg-primary px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary-strong"
+          className="volumes-cta mt-4 inline-flex items-center justify-center bg-primary font-mono text-[10px] font-bold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary-strong"
         >
           Book Health Check
         </Link>

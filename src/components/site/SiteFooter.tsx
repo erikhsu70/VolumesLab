@@ -2,7 +2,6 @@ import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import {
   ADDRESS,
-  BRANDING,
   COMPANY,
   CONTACT,
   MAP_LINK,
@@ -16,9 +15,8 @@ import {
 export function SiteFooter() {
   const items = footerItems();
   return (
-    <footer className="border-t border-border px-page py-10">
-      <div className="mx-auto flex max-w-7xl flex-col items-center justify-center gap-6 text-center lg:flex-row lg:gap-10">
-        <img src={BRANDING.mark} alt="Volumes Lab" className="h-11 w-auto max-w-24 shrink-0 object-contain opacity-90" />
+    <footer className="mt-auto shrink-0 border-t border-border px-page py-5">
+      <div className="mx-auto flex max-w-7xl items-center justify-center text-center">
         <p className="flex min-w-0 flex-wrap items-center justify-center gap-x-2 gap-y-1 font-sans text-[11px] normal-case leading-relaxed tracking-normal text-foreground/85 sm:text-xs">
           {items.map((item, i) => (
             <span key={item.key} className="contents">
