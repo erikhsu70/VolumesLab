@@ -20,7 +20,7 @@ import { useEffect, useState } from "react";
 import { SiteChrome } from "@/components/site/SiteChrome";
 import { ProductCard, SectionProductGrid } from "@/components/site/cards";
 import { homePage, type HeadlineSize } from "@/data/pages";
-import { visibleSections } from "@/lib/sections";
+import { productsInSection, visibleSections } from "@/lib/sections";
 import { healthCheckProduct } from "@/lib/health-check";
 import { canonical } from "@/lib/seo";
 import { metaTags } from "@/data/meta";
@@ -35,13 +35,14 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const healthCheck = healthCheckProduct();
+  const sections = visibleSections().filter((section) => productsInSection(section.key).some((p) => p.slug !== healthCheck?.slug));
   return (
     <SiteChrome>
       <ContactBlock />
       <Intro />
 
       {/* Order, names and on/off come from the CMS (Home page → Sections). */}
-      {visibleSections().map((s) => (
+      {sections.map((s) => (
         <Section key={s.key} id={s.key} title={s.title} description={s.description} collapsible={s.collapsible}>
           <SectionProductGrid section={s.key} excludeSlug={healthCheck?.slug} />
         </Section>
@@ -61,10 +62,7 @@ const headlineClass: Record<HeadlineSize, string> = {
   large: "text-3xl md:text-5xl",
 };
 
-// The hero: headline, address, email and hours, on the same left edge as the
-// header logo and every section below (client, 23/09/2026: "align left"). No
-// logo here, the header carries it; the map moved to the Location section at
-// the bottom of the page.
+// Home hero with two equal-width cards: Momence waitlist and CMS Health Check.
 function ContactBlock() {
   const healthCheck = healthCheckProduct();
   return (
