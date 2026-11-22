@@ -147,7 +147,7 @@ function WaitlistForm() {
   }, []);
 
   return (
-    <div className={`volumes-waitlist flex min-h-[320px] w-full min-w-0 flex-col justify-center border border-border bg-card p-2.5 text-foreground ${joined ? "volumes-waitlist-joined" : ""}`}>
+    <div className={`volumes-waitlist flex w-full min-w-0 flex-col border border-border bg-card px-2.5 py-1 text-foreground ${joined ? "volumes-waitlist-joined min-h-[160px] justify-center" : ""}`}>
       <div id="momence-plugin-lead-form" className={joined ? "volumes-waitlist-success" : ""} />
     </div>
   );
