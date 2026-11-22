@@ -18,8 +18,8 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-border px-page py-10">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-center gap-6 text-center lg:flex-row lg:gap-10">
-        <img src={BRANDING.mark} alt="Volumes Lab" className="w-24 shrink-0 opacity-90" />
-        <p className="flex min-w-0 flex-wrap items-center justify-center gap-x-2 gap-y-1 font-mono text-[10px] uppercase leading-relaxed tracking-wider text-muted">
+        <img src={BRANDING.mark} alt="Volumes Lab" className="h-11 w-auto max-w-24 shrink-0 object-contain opacity-90" />
+        <p className="flex min-w-0 flex-wrap items-center justify-center gap-x-2 gap-y-1 font-sans text-[11px] normal-case leading-relaxed tracking-normal text-foreground/85 sm:text-xs">
           {items.map((item, i) => (
             <span key={item.key} className="contents">
               {i > 0 && <span aria-hidden className="text-muted/60">//</span>}
