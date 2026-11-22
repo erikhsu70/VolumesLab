@@ -14,7 +14,7 @@ export function SiteHeader() {
           <Link to="/" className="shrink-0 leading-none">
             <img src={BRANDING.mark} alt="Volumes Lab" className="h-11 w-auto max-w-24 object-contain" />
           </Link>
-          <address className="flex min-w-0 flex-1 flex-nowrap items-center gap-x-2 whitespace-nowrap font-sans text-sm not-italic leading-relaxed text-foreground/85 md:gap-x-4">
+          <address className="flex min-w-0 flex-1 flex-nowrap items-baseline gap-x-2 whitespace-nowrap font-sans text-sm not-italic leading-relaxed text-foreground/85 md:gap-x-4">
             <Link to="/" className="font-bold hover:underline">Volumes Lab</Link>
             {ADDRESS.short && (
               <a href={MAP_LINK} target="_blank" rel="noreferrer" className="hover:underline">

@@ -36,6 +36,19 @@ function footerItems(): FooterItem[] {
   // no underline singling it out).
   const link = "hover:text-primary";
 
+  const handle = instagramHandle();
+  if (handle) {
+    items.push({
+      key: "instagram",
+      node: (
+        <>
+          <a href={instagramUrl()} target="_blank" rel="noreferrer" className={link}>
+            {handle}
+          </a>
+        </>
+      ),
+    });
+  }
   if (CONTACT.email) {
     items.push({
       key: "email",
@@ -66,19 +79,6 @@ function footerItems(): FooterItem[] {
         <a href={CONTACT.phoneHref} className={link}>
           {CONTACT.phone}
         </a>
-      ),
-    });
-  }
-  const handle = instagramHandle();
-  if (handle) {
-    items.push({
-      key: "instagram",
-      node: (
-        <>
-          <a href={instagramUrl()} target="_blank" rel="noreferrer" className={link}>
-            {handle}
-          </a>
-        </>
       ),
     });
   }
