@@ -41,6 +41,17 @@ function footerItems(): FooterItem[] {
   // no underline singling it out).
   const link = "hover:text-primary";
 
+  if (CONTACT.email) {
+    items.push({
+      key: "email",
+      node: (
+        <a href={`mailto:${CONTACT.email}`} className={link}>
+          {CONTACT.email}
+        </a>
+      ),
+    });
+  }
+
   if (PAGES.faq) items.push({ key: "faq", node: <Link to="/faq" className={link}>FAQ</Link> });
   if (PAGES.team) items.push({ key: "team", node: <Link to="/about/team" className={link}>Team</Link> });
   if (PAGES.legal) {
@@ -50,16 +61,6 @@ function footerItems(): FooterItem[] {
         <Link to="/legal" className={link}>
           Legal &amp; Privacy
         </Link>
-      ),
-    });
-  }
-  if (CONTACT.email) {
-    items.push({
-      key: "email",
-      node: (
-        <a href={`mailto:${CONTACT.email}`} className={link}>
-          {CONTACT.email}
-        </a>
       ),
     });
   }
