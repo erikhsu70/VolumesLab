@@ -215,15 +215,14 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Service names use Helvetica in cards and on their detail pages. */
 .product-card h3,
+h2.volumes-waitlist-title,
 h1.service-title {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 /* Make the waitlist look like a featured product card. */
 .volumes-waitlist-title {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
   font-weight: 700;
-  text-transform: none;
   letter-spacing: -0.035em;
   color: var(--foreground);
 }
@@ -277,19 +276,18 @@ h1.service-title {
   text-transform: none !important;
 }
 
-/* Remove widget-internal gutters so the inputs align with the title. */
-.volumes-waitlist #momence-plugin-lead-form > :first-child {
-  margin-left: 0 !important;
-  margin-right: 0 !important;
+/* The cards own their gutters; remove the embedded form's extra spacing. */
+.volumes-waitlist #momence-plugin-lead-form :is(.momence-lead_form-base_container, form, .momence-lead_form-field, .momence-lead_form-actions) {
+  margin: 0 !important;
+  padding: 0 !important;
 }
-.volumes-waitlist #momence-plugin-lead-form :is(form, form > div) {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
+.volumes-waitlist #momence-plugin-lead-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
-/* Match the service-card bottom padding below the Submit button. */
-.volumes-waitlist #momence-plugin-lead-form :is(form, form > div):last-child {
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
+.volumes-waitlist #momence-plugin-lead-form .momence-lead_form-field {
+  width: 100%;
 }
 .volumes-waitlist #momence-plugin-lead-form :is(button[type="submit"], input[type="submit"]) {
   margin-bottom: 0 !important;
@@ -337,8 +335,67 @@ h1.health-check-detail-title {
   h1.health-check-detail-title { font-size: 2.625rem; }
 }
 
-/* Center the featured Health Check body and its price, without affecting other services. */
-.health-check-featured .border-t { justify-content: center; }
+/* Center the featured copy between its heading and price divider on every screen. */
+.health-check-featured .health-check-copy {
+  min-height: 8rem;
+  padding-block: 1rem;
+}
+.health-check-featured > .border-t {
+  margin-top: 0;
+  justify-content: center;
+}
+
+/* Share desktop rows: title, name, surname, email/price, then both CTAs.
+   Subgrids include Momence's wrappers so content and validation can resize rows. */
+@media (min-width: 48rem) {
+  .home-contact-cards {
+    --home-card-rows: 5;
+    grid-template-rows: repeat(var(--home-card-rows), auto);
+    row-gap: 1rem;
+  }
+  .home-contact-cards:has(.momence-lead_form-form_error) {
+    --home-card-rows: 6;
+  }
+  .home-contact-cards > :is(.volumes-waitlist, .health-check-featured) {
+    grid-row: 1 / span var(--home-card-rows);
+  }
+  .home-contact-cards > .volumes-waitlist { grid-column: 1; }
+  .home-contact-cards > .health-check-featured { grid-column: 2; }
+
+  .home-contact-cards > .volumes-waitlist:not(.volumes-waitlist-joined),
+  .home-contact-cards > .health-check-featured,
+  .home-contact-cards .volumes-waitlist:not(.volumes-waitlist-joined) :is(#momence-plugin-lead-form, .momence-lead_form-base_container, form) {
+    display: grid;
+    grid-template-rows: subgrid;
+    row-gap: inherit;
+  }
+  .home-contact-cards .volumes-waitlist-title,
+  .home-contact-cards .health-check-featured > h3 {
+    grid-row: 1;
+    margin: 0;
+  }
+  .home-contact-cards .volumes-waitlist:not(.volumes-waitlist-joined) #momence-plugin-lead-form {
+    grid-row: 2 / -1;
+  }
+  .home-contact-cards .volumes-waitlist:not(.volumes-waitlist-joined) :is(.momence-lead_form-base_container, form) {
+    grid-row: 1 / -1;
+  }
+  .home-contact-cards .health-check-featured > .health-check-copy {
+    grid-row: 2 / span 2;
+    min-height: 0;
+    padding-block: 0;
+  }
+  .home-contact-cards .health-check-featured > .border-t {
+    grid-row: 4;
+    align-content: center;
+    padding-top: 0;
+  }
+  .home-contact-cards .health-check-featured > .volumes-cta {
+    grid-row: -2 / -1;
+    align-self: end;
+    margin-top: 0;
+  }
+}
 
 /* Match the former More Info CTA: outlined with no fill. */
 .volumes-cta,
@@ -354,7 +411,8 @@ h1.health-check-detail-title {
 }
 
 /* The waitlist fields match the Health Check description's body typography. */
-.volumes-waitlist #momence-plugin-lead-form :is(input, input::placeholder) {
+.volumes-waitlist #momence-plugin-lead-form input,
+.volumes-waitlist #momence-plugin-lead-form input::placeholder {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
   font-size: 0.875rem !important;
   font-weight: 400 !important;

@@ -60,12 +60,10 @@ function ContactBlock() {
   return (
     <section className="flex flex-1 items-center justify-center border-b border-border px-4 py-4 md:px-12 md:py-6">
       <div className="mx-auto w-full max-w-7xl">
-        <div className="grid w-full items-stretch gap-4 md:grid-cols-2 md:gap-6">
+        <div className="home-contact-cards grid w-full items-stretch gap-4 md:grid-cols-2 md:gap-6">
           <WaitlistForm />
           {healthCheck && (
-            <div className="min-w-0">
-              <ProductCard p={healthCheck} sourcePage="/" compact />
-            </div>
+            <ProductCard p={healthCheck} sourcePage="/" compact />
           )}
         </div>
       </div>
@@ -147,8 +145,8 @@ function WaitlistForm() {
   }, []);
 
   return (
-    <div className={`volumes-waitlist flex w-full min-w-0 flex-col border border-border bg-card px-2.5 py-1 text-center text-foreground ${joined ? "volumes-waitlist-joined min-h-[160px] justify-center" : ""}`}>
-      {!joined && <h2 className="mb-2 font-display text-lg font-bold uppercase leading-tight">Join the Waitlist</h2>}
+    <div className={`volumes-waitlist flex w-full min-w-0 flex-col border border-border bg-card px-6 pb-2.5 pt-6 text-center text-foreground ${joined ? "volumes-waitlist-joined min-h-[160px] justify-center" : ""}`}>
+      {!joined && <h2 className="volumes-waitlist-title mb-4 font-display text-lg font-bold uppercase leading-tight">Join the Waitlist</h2>}
       <div id="momence-plugin-lead-form" className={joined ? "volumes-waitlist-success" : ""} />
     </div>
   );

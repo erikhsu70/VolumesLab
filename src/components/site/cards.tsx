@@ -206,18 +206,19 @@ export function ProductCard({ p, sourcePage = "/", compact = false }: { p: Produ
       <Link
         to={productPath(p)}
         onClick={() => track("health_check_click", { product: p.slug, source_page: sourcePage })}
-        className="product-card health-check-featured flex h-full min-w-0 flex-col break-words border border-border bg-card pb-2.5 pl-6 pr-2.5 pt-6 text-center"
+        className="product-card health-check-featured flex h-full min-w-0 flex-col break-words border border-border bg-card px-6 pb-2.5 pt-6 text-center"
       >
         <h3 className="font-display text-lg font-bold uppercase leading-tight">{p.name}</h3>
-        {p.shortDescription?.trim() && (
-          <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted">{p.shortDescription}</p>
-        )}
-        <div className="flex-1" aria-hidden />
-        {p.badges && p.badges.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {p.badges.map((badge) => <IncludedBadge key={badge}>{badge}</IncludedBadge>)}
-          </div>
-        )}
+        <div className="health-check-copy flex flex-1 flex-col justify-center">
+          {p.shortDescription?.trim() && (
+            <p className="whitespace-pre-line text-sm leading-relaxed text-muted">{p.shortDescription}</p>
+          )}
+          {p.badges && p.badges.length > 0 && (
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
+              {p.badges.map((badge) => <IncludedBadge key={badge}>{badge}</IncludedBadge>)}
+            </div>
+          )}
+        </div>
         <PriceLine p={p} />
         <span className="volumes-cta mx-auto mt-4 inline-flex items-center justify-center border border-border bg-transparent font-mono text-[10px] font-bold uppercase tracking-widest text-foreground">
           Book Health Check
