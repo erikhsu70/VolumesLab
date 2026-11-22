@@ -19,7 +19,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteChrome } from "@/components/site/SiteChrome";
 import { ProductCard, SectionProductGrid } from "@/components/site/cards";
-import { homePage, type HeadlineSize } from "@/data/pages";
+import { homePage } from "@/data/pages";
 import { productsInSection, visibleSections } from "@/lib/sections";
 import { healthCheckProduct } from "@/lib/health-check";
 import { canonical } from "@/lib/seo";
@@ -54,25 +54,12 @@ function Home() {
 
 /* ---------------- Contact block ---------------- */
 
-// Heading size, chosen in the CMS (Home page → Headline size). "large" is the
-// original; the client asked for the title on one line (14/09/2026).
-const headlineClass: Record<HeadlineSize, string> = {
-  small: "text-2xl md:text-3xl",
-  medium: "text-3xl md:text-4xl",
-  large: "text-3xl md:text-5xl",
-};
-
 // Home hero with two equal-width cards: Momence waitlist and CMS Health Check.
 function ContactBlock() {
   const healthCheck = healthCheckProduct();
   return (
     <section className="border-b border-border px-page py-12 md:py-16">
       <div className="mx-auto max-w-7xl">
-        {homePage.headline && (
-          <h1 className={`mb-8 font-display font-extrabold uppercase leading-[1.05] tracking-tight text-balance break-words ${headlineClass[homePage.headlineSize]}`}>
-            {homePage.headline}
-          </h1>
-        )}
         <div className="grid items-stretch gap-6 md:grid-cols-2">
           <WaitlistForm />
           {healthCheck && (
@@ -160,7 +147,7 @@ function WaitlistForm() {
   }, []);
 
   return (
-    <div className={`volumes-waitlist flex min-h-[320px] w-full min-w-0 flex-col justify-center border border-border bg-card p-6 text-foreground ${joined ? "volumes-waitlist-joined" : ""}`}>
+    <div className={`volumes-waitlist flex min-h-[320px] w-full min-w-0 flex-col justify-center border border-border bg-card p-2.5 text-foreground ${joined ? "volumes-waitlist-joined" : ""}`}>
       <div id="momence-plugin-lead-form" className={joined ? "volumes-waitlist-success" : ""} />
     </div>
   );
@@ -201,7 +188,7 @@ function Section({
     {description && <p className="font-mono text-[11px] uppercase tracking-widest text-muted">{description}</p>}
   </div>;
   return (
-    <section id={id} className="scroll-mt-20 border-b border-border px-page py-10 md:py-14">
+    <section id={id} className="scroll-mt-20 border-b border-border px-page py-10 last:border-b-0 md:py-14">
       <div className="mx-auto max-w-7xl">
         {collapsible ? (
           <details className="group">
