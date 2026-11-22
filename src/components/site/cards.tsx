@@ -206,7 +206,7 @@ export function ProductCard({ p, sourcePage = "/", compact = false }: { p: Produ
       <Link
         to={productPath(p)}
         onClick={() => track("health_check_click", { product: p.slug, source_page: sourcePage })}
-        className="product-card flex h-full min-w-0 flex-col break-words border border-border bg-card pb-2.5 pl-6 pr-2.5 pt-6"
+        className="product-card health-check-featured flex h-full min-w-0 flex-col break-words border border-border bg-card pb-2.5 pl-6 pr-2.5 pt-6 text-center"
       >
         <h3 className="font-display text-lg font-bold uppercase leading-tight">{p.name}</h3>
         {p.shortDescription?.trim() && (
@@ -219,7 +219,7 @@ export function ProductCard({ p, sourcePage = "/", compact = false }: { p: Produ
           </div>
         )}
         <PriceLine p={p} />
-        <span className="volumes-cta mx-auto mt-4 inline-flex items-center justify-center bg-primary font-mono text-[10px] font-bold uppercase tracking-widest text-primary-foreground">
+        <span className="volumes-cta mx-auto mt-4 inline-flex items-center justify-center border border-border bg-transparent font-mono text-[10px] font-bold uppercase tracking-widest text-foreground">
           Book Health Check
         </span>
       </Link>

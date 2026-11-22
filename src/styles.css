@@ -326,3 +326,42 @@ h1.service-title {
   margin-left: auto !important;
   margin-right: auto !important;
 }
+
+/* Compact health-check title: 70% of the original size; other service pages unchanged. */
+h1.health-check-detail-title {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 1.575rem;
+  font-weight: 800;
+}
+@media (min-width: 48rem) {
+  h1.health-check-detail-title { font-size: 2.625rem; }
+}
+
+/* Center the featured Health Check body and its price, without affecting other services. */
+.health-check-featured .border-t { justify-content: center; }
+
+/* Match the former More Info CTA: outlined with no fill. */
+.volumes-cta,
+.volumes-waitlist #momence-plugin-lead-form :is(button[type="submit"], input[type="submit"]) {
+  background-color: transparent !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 0 !important;
+}
+.volumes-cta:hover,
+.volumes-waitlist #momence-plugin-lead-form :is(button[type="submit"], input[type="submit"]):hover {
+  border-color: var(--foreground) !important;
+}
+
+/* The waitlist fields match the Health Check description's body typography. */
+.volumes-waitlist #momence-plugin-lead-form :is(input, input::placeholder) {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  font-size: 0.875rem !important;
+  font-weight: 400 !important;
+  line-height: 1.625 !important;
+  letter-spacing: -0.012em !important;
+}
+.volumes-waitlist #momence-plugin-lead-form input::placeholder {
+  color: var(--muted) !important;
+  opacity: 1 !important;
+}

@@ -95,7 +95,7 @@ export function ProductDetail({ product }: { product: Product }) {
       <section className="border-b border-border px-page py-14 md:py-20">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
-            <h1 className="service-title font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-balance md:text-6xl">
+            <h1 className={product.slug === "health-check" ? "service-title health-check-detail-title font-display text-balance uppercase leading-[0.95] tracking-tight" : "service-title font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-balance md:text-6xl"}>
               {product.name}
             </h1>
             <p className="mt-6 max-w-xl whitespace-pre-line text-lg leading-relaxed text-muted text-pretty">
