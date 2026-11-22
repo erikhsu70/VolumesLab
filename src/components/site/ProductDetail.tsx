@@ -65,9 +65,9 @@ export function ProductDetail({ product }: { product: Product }) {
   const heroDescription = product.shortDescription?.trim() ?? "";
 
   return (
-    <div className="bg-background pb-20 md:pb-0">
-      <section className="border-b border-border px-page py-14 md:py-20">
-        <div className="mx-auto max-w-7xl">
+    <div className="flex flex-1 flex-col bg-background pb-20 md:pb-0">
+      <section className="flex flex-1 items-center border-b border-border px-page py-14 md:py-20">
+        <div className="mx-auto w-full max-w-7xl">
           <div className="max-w-3xl">
             <h1 className={product.slug === "health-check" ? "service-title health-check-detail-title font-display text-balance uppercase leading-[0.95] tracking-tight" : "service-title font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-balance md:text-6xl"}>
               {product.name}
@@ -105,7 +105,7 @@ export function ProductDetail({ product }: { product: Product }) {
               )}
             </div>
             <div className="mt-8">
-              <BookCta product={product} sourcePage={path} className="px-8 py-4 text-xs" />
+              <BookCta product={product} sourcePage={path} className="volumes-cta" />
             </div>
           </div>
         </div>
