@@ -1,16 +1,10 @@
-// Shared SKU layout approved for the live site: essentials, explanation,
-// preparation, three FAQs, location, then every other reachable service.
+// Shared SKU layout: show only product sections with authored copy.
 import { productPath, type Product } from "@/data/catalog";
 import { getProductContent } from "@/data/productContent";
-import { productLabels as L } from "@/data/pages";
 import { bookingHref, bookingLabel, trackBooking } from "@/lib/booking";
 import { productsInSection, visibleSections } from "@/lib/sections";
 import { BookCta, IncludedBadge, SectionProductGrid } from "./cards";
 import { FaqList, SectionTitle, StickyBookBar } from "./blocks";
-
-function description(product: Product) {
-  return product.shortDescription || product.tagline || "Ask our team for details before booking.";
-}
 
 type CopySection = "whatItIs" | "whatItDoes" | "whyItMatters" | "prep";
 
@@ -50,45 +44,25 @@ function splitOutcomeCopy(items: string[]) {
   return sections;
 }
 
-function faqs(product: Product, preparation: string[]) {
-  const content = getProductContent(product.slug);
-  const items = [...(content?.faqs ?? [])];
-  const fallbacks = [
-    {
-      q: "How should I prepare?",
-      a: preparation.length
-        ? preparation.join(" ")
-        : "The team will confirm any preparation instructions before your appointment.",
-    },
-    {
-      q: "What should I confirm before booking?",
-      a: "Please confirm the current price, availability and any requirements with the team when you book.",
-    },
-    {
-      q: "Where will it take place?",
-      a: "The team will confirm your appointment location when you book.",
-    },
-  ];
-  for (const fallback of fallbacks) {
-    if (items.length >= 3) break;
-    if (!items.some((item) => item.q.toLowerCase() === fallback.q.toLowerCase())) {
-      items.push(fallback);
-    }
-  }
-  return items.slice(0, 3);
-}
-
 export function ProductDetail({ product }: { product: Product }) {
   const content = getProductContent(product.slug);
   const path = productPath(product);
   const copy = splitOutcomeCopy(content?.outcomes ?? []);
-  const whatItIs = copy.whatItIs.length ? copy.whatItIs : product.measures;
-  const preparation = content?.prep.length ? content.prep : copy.prep;
-  const howItWorks = content?.experience.length
-    ? content.experience
-    : product.protocol.length
-      ? product.protocol.map((body, index) => ({ title: `Step ${index + 1}`, body }))
-      : copy.whatItDoes.map((body) => ({ title: "What it does", body }));
+  // Cleared CMS fields stay cleared. Do not refill sections with bundled
+  // product.measures, product.protocol or generic booking FAQs.
+  const whatItIs = copy.whatItIs;
+  const authoredPrep = (content?.prep ?? []).filter((item) => item.trim());
+  const preparation = authoredPrep.length ? authoredPrep : copy.prep;
+  const experience = (content?.experience ?? []).filter(
+    (step) => step.title.trim() && step.body.trim(),
+  );
+  const howItWorks = experience.length
+    ? experience
+    : copy.whatItDoes.map((body) => ({ title: "What it does", body }));
+  const faqItems = (content?.faqs ?? []).filter((item) => item.q.trim() && item.a.trim());
+  const showWhatItDoes = experience.length > 0 && copy.whatItDoes.length > 0;
+  const showOverview = whatItIs.length > 0 || showWhatItDoes || copy.whyItMatters.length > 0;
+  const heroDescription = product.shortDescription?.trim() ?? "";
 
   return (
     <div className="bg-background pb-20 md:pb-0">
@@ -98,9 +72,11 @@ export function ProductDetail({ product }: { product: Product }) {
             <h1 className={product.slug === "health-check" ? "service-title health-check-detail-title font-display text-balance uppercase leading-[0.95] tracking-tight" : "service-title font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-balance md:text-6xl"}>
               {product.name}
             </h1>
-            <p className="mt-6 max-w-xl whitespace-pre-line text-lg leading-relaxed text-muted text-pretty">
-              {description(product)}
-            </p>
+            {heroDescription && (
+              <p className="mt-6 max-w-xl whitespace-pre-line text-lg leading-relaxed text-muted text-pretty">
+                {heroDescription}
+              </p>
+            )}
             {product.badges && product.badges.length > 0 && (
               <div className="mt-5 flex flex-wrap gap-2">
                 {product.badges.map((badge) => (
@@ -117,9 +93,11 @@ export function ProductDetail({ product }: { product: Product }) {
                   )}
                 </span>
               )}
-              <span className="font-mono text-[11px] uppercase tracking-widest text-muted">
-                {product.duration || "Duration on booking"}
-              </span>
+              {product.duration && (
+                <span className="font-mono text-[11px] uppercase tracking-widest text-muted">
+                  {product.duration}
+                </span>
+              )}
               {product.membership?.commitment && (
                 <span className="font-mono text-[11px] uppercase tracking-widest text-muted">
                   {product.membership.commitment}
@@ -133,14 +111,12 @@ export function ProductDetail({ product }: { product: Product }) {
         </div>
       </section>
 
+      {showOverview && (
       <section className="border-b border-border px-page py-14 md:py-20">
         <div className="mx-auto max-w-7xl">
-          <SectionTitle>What it is</SectionTitle>
-          <ul className="mt-8 max-w-3xl space-y-4">
-            {(whatItIs.length
-              ? whatItIs
-              : ["Ask our team what this service includes before booking."]
-            ).map((item) => (
+          {whatItIs.length > 0 && <SectionTitle>What it is</SectionTitle>}
+          {whatItIs.length > 0 && <ul className="mt-8 max-w-3xl space-y-4">
+            {whatItIs.map((item) => (
               <li
                 key={item}
                 className="flex gap-4 whitespace-pre-line text-base leading-relaxed text-foreground/85"
@@ -151,9 +127,8 @@ export function ProductDetail({ product }: { product: Product }) {
                 {item}
               </li>
             ))}
-          </ul>
-          {(Boolean(content?.experience.length) || product.protocol.length > 0) &&
-            copy.whatItDoes.length > 0 && (
+          </ul>}
+          {showWhatItDoes && (
               <div className="mt-10 max-w-3xl">
                 <h3 className="font-display text-xl font-extrabold uppercase tracking-tight">
                   What it does
@@ -185,20 +160,14 @@ export function ProductDetail({ product }: { product: Product }) {
           )}
         </div>
       </section>
+      )}
 
+      {howItWorks.length > 0 && (
       <section className="border-b border-border px-page py-14 md:py-20">
         <div className="mx-auto max-w-7xl">
           <SectionTitle>How it works</SectionTitle>
           <ol className="mt-10 grid gap-8 md:grid-cols-3">
-            {(howItWorks.length
-              ? howItWorks
-              : [
-                  {
-                    title: "Your appointment",
-                    body: "The team will explain the process before you book.",
-                  },
-                ]
-            ).map((step, index) => (
+            {howItWorks.map((step, index) => (
               <li key={`${step.title}-${index}`} className="border-t-2 border-primary pt-5">
                 <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-primary">
                   {String(index + 1).padStart(2, "0")}
@@ -216,12 +185,13 @@ export function ProductDetail({ product }: { product: Product }) {
           </ol>
         </div>
       </section>
+      )}
 
+      {preparation.length > 0 && (
       <section className="border-b border-border px-page py-14 md:py-20">
         <div className="mx-auto max-w-7xl">
           <SectionTitle>How to prepare</SectionTitle>
-          {preparation.length ? (
-            <ul className="mt-8 max-w-3xl space-y-3">
+          <ul className="mt-8 max-w-3xl space-y-3">
               {preparation.map((item) => (
                 <li
                   key={item}
@@ -234,23 +204,20 @@ export function ProductDetail({ product }: { product: Product }) {
                 </li>
               ))}
             </ul>
-          ) : (
-            <p className="mt-8 max-w-3xl text-base leading-relaxed text-muted">
-              The team will confirm any preparation instructions before your appointment.
-            </p>
-          )}
         </div>
       </section>
+      )}
 
+      {faqItems.length > 0 && (
       <section className="border-b border-border px-page py-14 md:py-20">
         <div className="mx-auto max-w-7xl">
           <SectionTitle>FAQs</SectionTitle>
           <div className="mt-8 max-w-4xl">
-            <FaqList items={faqs(product, preparation)} />
+            <FaqList items={faqItems} />
           </div>
         </div>
       </section>
-
+      )}
 
       <OtherProductsGrid product={product} />
 
