@@ -3,7 +3,6 @@
 import { productPath, type Product } from "@/data/catalog";
 import { getProductContent } from "@/data/productContent";
 import { productLabels as L } from "@/data/pages";
-import { Location } from "./Location";
 import { bookingHref, bookingLabel, trackBooking } from "@/lib/booking";
 import { productsInSection, visibleSections } from "@/lib/sections";
 import { BookCta, IncludedBadge, SectionProductGrid } from "./cards";
@@ -252,7 +251,6 @@ export function ProductDetail({ product }: { product: Product }) {
         </div>
       </section>
 
-      <Location />
 
       <OtherProductsGrid product={product} />
 
