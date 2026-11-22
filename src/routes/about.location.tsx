@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { pageGate } from "@/lib/pages";
 import { SiteChrome } from "@/components/site/SiteChrome";
 import { metaTags } from "@/data/meta";
@@ -38,7 +38,7 @@ function LocationPage() {
         <div className="mx-auto max-w-7xl">
           <Eyebrow>Location</Eyebrow>
           <SectionTitle as="h1" className="mt-6 max-w-3xl">
-            Churruca 5, Justicia, Madrid
+            <a href={MAP_LINK} target="_blank" rel="noreferrer" className="hover:underline">Churruca 5, Justicia, Madrid</a>
           </SectionTitle>
         </div>
       </section>
