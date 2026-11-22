@@ -442,9 +442,15 @@ footer > div > p,
 /* Phones: each card receives half of the height between header and footer.
    The entire region remains within the viewport at standard mobile heights. */
 @media (max-width: 47.999rem) {
+  .home-contact-cards {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+  }
   .home-contact-cards > :is(.volumes-waitlist, .health-check-featured) {
+    flex: 0 0 auto;
     min-height: 0;
-    height: 100%;
+    height: auto;
   }
   .home-contact-cards .health-check-copy {
     min-height: 0;
