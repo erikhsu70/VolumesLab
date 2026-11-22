@@ -335,22 +335,25 @@ h1.health-check-detail-title {
   h1.health-check-detail-title { font-size: 2.625rem; }
 }
 
-/* Center the featured copy between its heading and price divider on every screen. */
+/* Center description between the title and separator. Keep the price and
+   duration side by side and centered between the separator and CTA. */
 .health-check-featured .health-check-copy {
   min-height: 8rem;
   padding-block: 1rem;
 }
 .health-check-featured > .border-t {
-  /* Keep price and duration evenly spread through the vertical space between
-     the horizontal divider and the booking CTA, in the featured card only. */
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: nowrap;
   align-items: center;
-  justify-content: space-evenly;
-  gap: 0.3rem;
-  min-height: 4.75rem;
+  justify-content: center;
+  gap: 2rem;
+  min-height: 0;
   margin-top: 0;
-  padding: 0.75rem 0 0.4rem;
+  /* The CTA starts one grid gap below this row. Top padding shifts the
+     price/duration baseline halfway through that gap without increasing
+     the height of the email-aligned desktop row. */
+  padding: 1rem 0 0;
 }
 
 /* Share desktop rows: title, name, surname, email/price, then both CTAs.
@@ -435,7 +438,6 @@ h1.health-check-detail-title {
    and CTA treatments remain distinct by design. */
 :root { --volumes-body-font-size: 0.875rem; }
 header address,
-footer > div > p,
 .health-check-featured .health-check-copy p,
 .volumes-waitlist #momence-plugin-lead-form input,
 .volumes-waitlist #momence-plugin-lead-form input::placeholder {
@@ -446,20 +448,27 @@ footer > div > p,
   letter-spacing: -0.012em !important;
 }
 
-/* Phones: each card receives half of the height between header and footer.
-   The entire region remains within the viewport at standard mobile heights. */
+/* On phones hide the large CTA and keep name/address on a single line. */
 @media (max-width: 47.999rem) {
+  header .volumes-cta { display: none !important; }
+  header address {
+    white-space: nowrap;
+    flex-wrap: nowrap;
+    font-size: clamp(10px, 3vw, 13px) !important;
+  }
+  header img { max-width: 12vw; }
+
+  /* The contact block fills the actual header-to-footer area, so the top,
+     between-card, and bottom spaces are equal rather than a centered cluster. */
   .home-contact-cards {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
+    gap: 0;
   }
   .home-contact-cards > :is(.volumes-waitlist, .health-check-featured) {
     flex: 0 0 auto;
     min-height: 0;
     height: auto;
-  }
-  .home-contact-cards .health-check-copy {
-    min-height: 0;
   }
 }

@@ -17,12 +17,9 @@ export function SiteFooter() {
   return (
     <footer className="mt-auto shrink-0 border-t border-border px-page py-5">
       <div className="mx-auto flex max-w-7xl items-center justify-center text-center">
-        <p className="flex min-w-0 flex-wrap items-center justify-center gap-x-2 gap-y-1 font-sans text-sm normal-case leading-relaxed tracking-normal text-foreground/85">
-          {items.map((item, i) => (
-            <span key={item.key} className="contents">
-              {i > 0 && <span aria-hidden className="text-muted/60">//</span>}
-              <span className="max-w-full break-words">{item.node}</span>
-            </span>
+        <p className="flex min-w-0 flex-wrap items-center justify-center gap-x-4 gap-y-1 font-sans text-[11px] normal-case leading-relaxed tracking-normal text-foreground/85 sm:text-xs">
+          {items.map((item) => (
+            <span key={item.key} className="max-w-full break-words">{item.node}</span>
           ))}
         </p>
       </div>

@@ -58,9 +58,9 @@ function Home() {
 function ContactBlock() {
   const healthCheck = healthCheckProduct();
   return (
-    <section className="flex flex-1 items-center justify-center min-h-0 border-b border-border px-4 py-4 md:px-12 md:py-6">
-      <div className="mx-auto h-full w-full max-w-7xl md:h-auto">
-        <div className="home-contact-cards grid h-full min-h-0 w-full grid-rows-2 items-stretch gap-4 md:h-auto md:grid-rows-none md:grid-cols-2 md:gap-6">
+    <section className="flex min-h-0 flex-1 flex-col border-b border-border px-4 md:flex-row md:items-center md:justify-center md:px-12 md:py-6">
+      <div className="mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col md:block md:flex-none">
+        <div className="home-contact-cards flex min-h-0 w-full flex-1 flex-col md:grid md:flex-none md:grid-cols-2 md:gap-6">
           <WaitlistForm />
           {healthCheck && (
             <ProductCard p={healthCheck} sourcePage="/" compact />
@@ -145,7 +145,7 @@ function WaitlistForm() {
   }, []);
 
   return (
-    <div className={`volumes-waitlist flex w-full min-w-0 flex-col border border-border bg-card px-6 pb-6 pt-6 text-center text-foreground ${joined ? "volumes-waitlist-joined min-h-[160px] justify-center" : ""}`}>
+    <div className={`volumes-waitlist flex w-full min-w-0 flex-col border border-border bg-card px-6 pb-4 pt-6 text-center text-foreground ${joined ? "volumes-waitlist-joined min-h-[160px] justify-center" : ""}`}>
       {!joined && <h2 className="volumes-waitlist-title mb-4 font-display text-lg font-bold uppercase leading-tight">Join the Waitlist</h2>}
       <div id="momence-plugin-lead-form" className={joined ? "volumes-waitlist-success" : ""} />
     </div>
