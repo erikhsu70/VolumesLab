@@ -64,7 +64,7 @@ function ContactBlock() {
           <WaitlistForm />
           {healthCheck && (
             <div className="min-w-0">
-              <ProductCard p={healthCheck} sourcePage="/" />
+              <ProductCard p={healthCheck} sourcePage="/" compact />
             </div>
           )}
         </div>
