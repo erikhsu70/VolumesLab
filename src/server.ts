@@ -59,6 +59,9 @@ export default {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       const normalized = await normalizeCatastrophicSsrResponse(response);
+      // Hostinger renders fresh CMS data on the server. Do not let browser or
+      // edge HTML caching turn direct URLs into a second, stale content source.
+      if (import.meta.env.VITE_CMS_PUBLIC_URL === "/_cms") normalized.headers.set("Cache-Control", "no-store");
       if (import.meta.env.VITE_PREVIEW === "true") normalized.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
       return normalized;
     } catch (error) {
