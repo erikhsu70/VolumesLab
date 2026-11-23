@@ -30,3 +30,14 @@ test('proxy never follows redirects or leaks upstream cookies', async () => {
   assert.equal(response.headers.get('set-cookie'), null);
   assert.equal(response.headers.get('cache-control'), 'no-store');
 });
+
+test('media proxy preserves original bytes and forbids intermediary transforms', async () => {
+  const original = new Uint8Array([255, 216, 255, 0, 1, 2, 255, 217]);
+  const response = await publicCmsProxy(
+    new Request('https://preview.example/_cms/api/media/file/logo.jpg'),
+    'https://cms.volumeslab.com',
+    async () => new Response(original, { headers: { 'Content-Type': 'image/jpeg' } }),
+  );
+  assert.equal(response.headers.get('cache-control'), 'no-store, no-transform');
+  assert.deepEqual(new Uint8Array(await response.arrayBuffer()), original);
+});

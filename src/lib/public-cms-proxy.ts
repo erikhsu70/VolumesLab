@@ -17,7 +17,10 @@ export async function publicCmsProxy(request: Request, origin: string, transport
       headers: { Accept: publicMedia.test(decoded) ? "*/*" : "application/json" },
     });
     if (response.status >= 300 && response.status < 400) return new Response(null, { status: 502 });
-    const headers = new Headers({ "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" });
+    const headers = new Headers({
+      "Cache-Control": publicMedia.test(decoded) ? "no-store, no-transform" : "no-store",
+      "X-Content-Type-Options": "nosniff",
+    });
     headers.set("Content-Type", response.headers.get("content-type") || "application/octet-stream");
     return new Response(request.method === "HEAD" ? null : response.body, { status: response.status, headers });
   } catch { return new Response(null, { status: 502 }); }
