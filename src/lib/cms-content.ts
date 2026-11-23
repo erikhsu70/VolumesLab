@@ -68,7 +68,7 @@ import {
 } from "@/data/site";
 import { LINKS, setBookingHome } from "@/lib/momence";
 
-const CMS_URL = "https://cms.volumeslab.com";
+import { CMS_FETCH_URL as CMS_URL, CMS_PUBLIC_URL } from "./cms-origin";
 const TIMEOUT_MS = 3_500;
 
 /* ────────────────────────── fetch one bundle ────────────────────────── */
@@ -408,7 +408,7 @@ function uploadUrl(v: unknown): string {
   if (!v || typeof v !== "object") return "";
   const url = str((v as CmsDoc).url);
   if (!url) return "";
-  return url.startsWith("/") ? `${CMS_URL}${url}` : url;
+  return url.startsWith("/") ? `${CMS_PUBLIC_URL}${url}` : url;
 }
 
 /**

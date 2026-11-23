@@ -10,7 +10,7 @@
 // Commercial values (price, duration, availability) never come from here.
 // Momence owns those; the CMS collections do not even have the fields.
 
-const CMS_URL = "https://cms.volumeslab.com";
+import { CMS_FETCH_URL as CMS_URL, CMS_PUBLIC_URL } from "./cms-origin";
 
 /** How long a fetched value is served before we re-ask the CMS. */
 const TTL_MS = 30_000;
@@ -184,7 +184,7 @@ export async function cmsTeam(): Promise<Person[]> {
       role: p.role ?? "",
       credentials: p.credentials ?? "",
       bio: p.bio ?? "",
-      photo: url.startsWith("/") ? `${CMS_URL}${url}` : url,
+      photo: url.startsWith("/") ? `${CMS_PUBLIC_URL}${url}` : url,
     };
   });
 }

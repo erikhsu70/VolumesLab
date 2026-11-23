@@ -3,6 +3,8 @@ import "./lib/error-capture";
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 import { sitemapResponse } from "./lib/sitemap";
+import { CMS_ORIGIN } from "./lib/cms-origin";
+import { publicCmsProxy } from "./lib/public-cms-proxy";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -48,12 +50,17 @@ function isH3SwallowedErrorBody(body: string): boolean {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      if (import.meta.env.VITE_CMS_PUBLIC_URL === "/_cms" && new URL(request.url).pathname.startsWith("/_cms/")) {
+        return await publicCmsProxy(request, CMS_ORIGIN);
+      }
       if (new URL(request.url).pathname === "/sitemap.xml") {
         return await sitemapResponse(request);
       }
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
-      return await normalizeCatastrophicSsrResponse(response);
+      const normalized = await normalizeCatastrophicSsrResponse(response);
+      if (import.meta.env.VITE_PREVIEW === "true") normalized.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
+      return normalized;
     } catch (error) {
       console.error(error);
       return new Response(renderErrorPage(), {

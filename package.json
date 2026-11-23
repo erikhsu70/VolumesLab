@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
+    "build:hostinger-preview": "NITRO_PRESET=node_server VITE_CMS_PUBLIC_URL=/_cms VITE_PREVIEW=true vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
