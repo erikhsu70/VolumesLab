@@ -58,7 +58,7 @@ function Home() {
 function ContactBlock() {
   const healthCheck = healthCheckProduct();
   return (
-    <section className="flex min-h-0 flex-1 flex-col border-b border-border px-4 md:flex-row md:items-center md:justify-center md:px-12 md:py-6">
+    <section className="flex min-h-0 flex-1 flex-col border-b border-border px-4 py-4 md:flex-row md:items-center md:justify-center md:px-12 md:py-6">
       <div className="mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col md:block md:flex-none">
         <div className="home-contact-cards flex min-h-0 w-full flex-1 flex-col md:grid md:flex-none md:grid-cols-2 md:gap-6">
           <WaitlistForm />

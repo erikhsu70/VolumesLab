@@ -464,11 +464,22 @@ header address,
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    gap: 0;
+    gap: 1rem; /* minimum separation between the two cards on small phones */
   }
   .home-contact-cards > :is(.volumes-waitlist, .health-check-featured) {
     flex: 0 0 auto;
     min-height: 0;
     height: auto;
   }
+}
+
+/* Momence capture fields should be as tall as the 36px CTAs. Exclude the
+   submit and non-text inputs so the existing button sizing is unchanged. */
+.volumes-waitlist #momence-plugin-lead-form input:not([type="hidden"]):not([type="submit"]):not([type="checkbox"]):not([type="radio"]) {
+  box-sizing: border-box !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
+  padding-block: 0 !important;
+  padding-inline: 12px !important;
 }
