@@ -39,7 +39,10 @@ export async function sitemapResponse(request: Request): Promise<Response> {
   const [content, posts] = await Promise.all([cmsSiteContent(), cmsPosts()]);
   // Keep applying and reading the shared data synchronous, as in the root loader.
   applyCmsContent(content);
-  const paths = new Set<string>(["/"]);
+  // /waitlist is a standalone landing linked from outside the site; it is
+  // not reachable through on-site links, so the sitemap carries it (the
+  // static build crawls from here).
+  const paths = new Set<string>(["/", "/waitlist"]);
   for (const key of Object.keys(pagePaths) as PageKey[]) {
     if (PAGES[key] && !(pageMeta[key] as PageMeta).noindex) paths.add(pagePaths[key]);
   }
