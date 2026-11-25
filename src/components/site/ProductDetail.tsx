@@ -4,7 +4,7 @@ import { getProductContent } from "@/data/productContent";
 import { bookingHref, bookingLabel, trackBooking } from "@/lib/booking";
 import { productsInSection, visibleSections } from "@/lib/sections";
 import { BookCta, IncludedBadge, SectionProductGrid } from "./cards";
-import { FaqList, SectionTitle, StickyBookBar } from "./blocks";
+import { FaqList, SectionTitle } from "./blocks";
 
 type CopySection = "whatItIs" | "whatItDoes" | "whyItMatters" | "prep";
 
@@ -65,7 +65,7 @@ export function ProductDetail({ product }: { product: Product }) {
   const heroDescription = product.shortDescription?.trim() ?? "";
 
   return (
-    <div className="flex flex-1 flex-col bg-background pb-20 md:pb-0">
+    <div className="flex flex-1 flex-col bg-background">
       <section className="flex flex-1 items-center border-b border-border px-page py-14 md:py-20">
         <div className="mx-auto w-full max-w-7xl">
           <div className="max-w-3xl">
@@ -220,15 +220,6 @@ export function ProductDetail({ product }: { product: Product }) {
       )}
 
       <OtherProductsGrid product={product} />
-
-      <StickyBookBar
-        pricePeriod={product.pricePeriod}
-        price={product.price === 0 && product.priceTbd ? undefined : product.price}
-        duration={product.duration}
-        href={bookingHref(product)}
-        onClick={() => trackBooking(product, path)}
-        ctaLabel={bookingLabel(product)}
-      />
     </div>
   );
 }
