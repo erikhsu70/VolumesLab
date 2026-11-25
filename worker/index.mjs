@@ -19,6 +19,7 @@ const DAY = 24 * HOUR;
 const MAX_ATTEMPTS_BEFORE_ATTENTION = 8;
 const PER_IP_PER_MINUTE = 6;
 const GLOBAL_PER_HOUR = 400;
+const LEASE_MS = 90 * 1000; // a sync attempt holds the row this long; a crashed attempt becomes due again after it
 const SYNCED_RETENTION_MS = 180 * DAY; // synced rows hold no personal data, only a hash and the lead id
 
 const SCHEMA = [
@@ -67,9 +68,16 @@ async function bump(env, bucket, now) {
 }
 
 // One attempt to hand a stored signup to Momence. Never throws.
-async function syncToMomence(env, row) {
+async function syncToMomence(env, candidate) {
   const url = env.MOMENCE_COLLECT_URL || COLLECT_URL;
   const now = Date.now();
+  // Atomic claim: only one request/cron run at a time may call Momence for a
+  // given signup. The claim is a short lease (not a permanent lock), so a
+  // crash mid-sync leaves the row due again once the lease runs out.
+  const row = await env.DB.prepare(
+    "UPDATE signups SET next_attempt_at=? WHERE email_hash=? AND status!='synced' AND next_attempt_at<=? RETURNING *",
+  ).bind(now + LEASE_MS, candidate.email_hash, now).first();
+  if (!row) return "busy";
   let outcome = "error";
   let leadId = null;
   let detail = "";
