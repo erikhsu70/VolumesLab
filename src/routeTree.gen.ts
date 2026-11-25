@@ -16,6 +16,7 @@ import { Route as BookRouteImport } from './routes/book'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as WaitlistRouteImport } from './routes/waitlist'
 import { Route as AboutIndexRouteImport } from './routes/about.index'
 import { Route as AboutLabRouteImport } from './routes/about.lab'
 import { Route as AboutLocationRouteImport } from './routes/about.location'
@@ -66,6 +67,11 @@ const ContactRoute = ContactRouteImport.update({
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WaitlistRoute = WaitlistRouteImport.update({
+  id: '/waitlist',
+  path: '/waitlist',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutIndexRoute = AboutIndexRouteImport.update({
@@ -157,6 +163,7 @@ export interface FileRoutesByFullPath {
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
+  '/waitlist': typeof WaitlistRoute
   '/about/lab': typeof AboutLabRoute
   '/about/location': typeof AboutLocationRoute
   '/about/team': typeof AboutTeamRoute
@@ -182,6 +189,7 @@ export interface FileRoutesByTo {
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
+  '/waitlist': typeof WaitlistRoute
   '/about/lab': typeof AboutLabRoute
   '/about/location': typeof AboutLocationRoute
   '/about/team': typeof AboutTeamRoute
@@ -208,6 +216,7 @@ export interface FileRoutesById {
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
+  '/waitlist': typeof WaitlistRoute
   '/about/lab': typeof AboutLabRoute
   '/about/location': typeof AboutLocationRoute
   '/about/team': typeof AboutTeamRoute
@@ -235,6 +244,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/contact'
     | '/faq'
+    | '/waitlist'
     | '/about/lab'
     | '/about/location'
     | '/about/team'
@@ -260,6 +270,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/contact'
     | '/faq'
+    | '/waitlist'
     | '/about/lab'
     | '/about/location'
     | '/about/team'
@@ -285,6 +296,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/contact'
     | '/faq'
+    | '/waitlist'
     | '/about/lab'
     | '/about/location'
     | '/about/team'
@@ -311,6 +323,7 @@ export interface RootRouteChildren {
   CartRoute: typeof CartRoute
   ContactRoute: typeof ContactRoute
   FaqRoute: typeof FaqRoute
+  WaitlistRoute: typeof WaitlistRoute
   AboutLabRoute: typeof AboutLabRoute
   AboutLocationRoute: typeof AboutLocationRoute
   AboutTeamRoute: typeof AboutTeamRoute
@@ -377,6 +390,13 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/waitlist': {
+      id: '/waitlist'
+      path: '/waitlist'
+      fullPath: '/waitlist'
+      preLoaderRoute: typeof WaitlistRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about/': {
@@ -512,6 +532,7 @@ const rootRouteChildren: RootRouteChildren = {
   CartRoute: CartRoute,
   ContactRoute: ContactRoute,
   FaqRoute: FaqRoute,
+  WaitlistRoute: WaitlistRoute,
   AboutLabRoute: AboutLabRoute,
   AboutLocationRoute: AboutLocationRoute,
   AboutTeamRoute: AboutTeamRoute,
