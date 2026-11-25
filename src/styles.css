@@ -483,3 +483,24 @@ header address,
   padding-block: 0 !important;
   padding-inline: 12px !important;
 }
+
+/* Layout the old Momence embed provided itself; the waitlist form is now ours. */
+.volumes-waitlist #momence-plugin-lead-form .momence-lead_form-base_container {
+  width: 100%;
+  box-sizing: border-box;
+  background: #F7F5F6;
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+}
+.volumes-waitlist #momence-plugin-lead-form .momence-lead_form-field { display: flex; flex-direction: column; }
+.volumes-waitlist #momence-plugin-lead-form .momence-lead_form-field_input {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  background: #fff;
+  color: rgb(3, 1, 13);
+}
+.volumes-waitlist #momence-plugin-lead-form .momence-lead_form-actions { display: flex; }
+.volumes-waitlist #momence-plugin-lead-form .momence-lead_form-submit_btn { margin: 0 auto; }
