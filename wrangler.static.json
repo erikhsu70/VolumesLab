@@ -8,6 +8,26 @@
   "assets": {
     "directory": "./.output/public",
     "html_handling": "drop-trailing-slash",
-    "not_found_handling": "404-page"
+    "not_found_handling": "404-page",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/api/*"
+    ]
+  },
+  "main": "worker/index.mjs",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "volumes-waitlist",
+      "database_id": "2fab8f8c-2e60-4646-ada5-cf817a831fb3"
+    }
+  ],
+  "triggers": {
+    "crons": [
+      "*/5 * * * *"
+    ]
+  },
+  "observability": {
+    "enabled": true
   }
 }
