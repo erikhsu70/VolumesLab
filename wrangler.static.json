@@ -14,18 +14,5 @@
       "/api/*"
     ]
   },
-  "main": "worker/index.mjs",
-  "d1_databases": [
-    {
-      "binding": "DB"
-    }
-  ],
-  "triggers": {
-    "crons": [
-      "*/5 * * * *"
-    ]
-  },
-  "observability": {
-    "enabled": true
-  }
+  "main": "worker/index.mjs"
 }
